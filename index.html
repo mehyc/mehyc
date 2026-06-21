@@ -6,8 +6,9 @@
     <title>Chan Hyc · 秘密基地</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -115,7 +116,7 @@
             opacity: 1;
         }
 
-        /* ========= 原有样式 ========= */
+        /* ========= 跑马灯 ========= */
         .marquee-wrapper {
             position: sticky;
             top: 0;
@@ -449,12 +450,10 @@
                 <div class="name">chan hyc</div>
                 <div class="time-display" id="liveDateTime">-- 年 -- 月 -- 日 -- : -- : -- 星期-</div>
 
-                <!-- 座右銘按鈕 (位於日期下方) -->
+                <!-- 座右銘按鈕 -->
                 <button class="motto-btn" id="mottoBtn">
                     <i class="fas fa-quote-left"></i> 座右銘
                 </button>
-
-                <!-- 原本的 bio 已刪除 -->
 
                 <div class="links-grid">
                     <!-- 匿名按钮 -->
@@ -491,7 +490,7 @@
     <div class="fixed-footer">
         <div>© chan hyc 開發及維護 · 多了解我</div>
         <div>官方LINE ID：<strong>@517vqktq</strong> (歡迎私訊)</div>
-        <div class="footer-stats"><i class="fas fa-chart-line"></i> 總瀏覽次數：<span id="visitCountDisplay">⟳ 同步中</span></div>
+        <div class="footer-stats"><i class="fas fa-chart-line"></i> 總瀏覽次數：<span id="total_view_display">讀取中...</span></div>
     </div>
     <div id="toastMsg" class="toast-msg">✨ 操作成功</div>
 </div>
@@ -515,6 +514,38 @@
 </div>
 
 <script>
+    // ========= Firebase 瀏覽次數計數器 =========
+    const firebaseConfig = {
+        databaseURL: "https://mehyc-7eabb-default-rtdb.asia-southeast1.firebasedatabase.app/"
+    };
+
+    function startRealtimeCounter() {
+        try {
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.database();
+            // ✅ 使用 total_views 路徑
+            const viewsRef = db.ref('total_views');
+
+            // 原子 +1（使用 transaction，避免多人同時寫入時產生衝突）
+            viewsRef.transaction((currentValue) => {
+                return (currentValue || 0) + 1;
+            });
+
+            // 監聽即時變化，更新顯示
+            viewsRef.on('value', (snapshot) => {
+                const count = snapshot.val();
+                const viewElem = document.getElementById('total_view_display');
+                if (viewElem && count !== null) {
+                    viewElem.innerText = count.toLocaleString();
+                }
+            });
+        } catch (err) {
+            console.error("Firebase Error:", err);
+            const viewElem = document.getElementById('total_view_display');
+            if (viewElem) viewElem.innerText = "暫時無法顯示";
+        }
+    }
+
     // ========= 座右銘彈窗控制 =========
     const mottoBtn = document.getElementById('mottoBtn');
     const mottoOverlay = document.getElementById('mottoOverlay');
@@ -657,7 +688,6 @@
             mainWrapper.classList.add('visible');
         }, 500);
         setTimeout(() => {
-            if (typeof initCounter === 'function') initCounter();
             if (typeof bindButtons === 'function') bindButtons();
         }, 600);
         setTimeout(() => { document.body.style.overflow = ''; }, 500);
@@ -666,49 +696,7 @@
     enterBtn.addEventListener('click', enterSite);
     document.body.style.overflow = 'hidden';
 
-    // ========= Firebase 原子计数器 =========
-    let counterInitialized = false;
-
-    function initCounter() {
-        if (counterInitialized) return;
-        counterInitialized = true;
-        const firebaseConfig = {
-            apiKey: "AIzaSyBAObVm3FY_8GkR9u5TxUCXBsWm2uB0Pn0",
-            authDomain: "mehyc-7eabb.firebaseapp.com",
-            databaseURL: "https://mehyc-7eabb-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "mehyc-7eabb",
-            storageBucket: "mehyc-7eabb.firebasestorage.app",
-            messagingSenderId: "583873851023",
-            appId: "1:583873851023:web:8f2de1755b7e27e62ccafa",
-            measurementId: "G-F0EQML1TQ9"
-        };
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        const counterRef = firebase.database().ref('visitCount');
-        const displaySpan = document.getElementById('visitCountDisplay');
-
-        function updateDisplay(value) {
-            if (displaySpan) displaySpan.innerText = (typeof value === 'number') ? value.toLocaleString() : value;
-        }
-
-        counterRef.transaction((current) => {
-            let newVal = (current === null || typeof current !== 'number') ? 1 : current + 1;
-            return newVal;
-        }, (error, committed, snapshot) => {
-            if (error) {
-                console.error('transaction error', error);
-                updateDisplay('⚠️ 權限錯誤');
-                showToast('❌ 計數失敗，請檢查 Firebase 規則');
-            } else if (committed) {
-                updateDisplay(snapshot.val());
-            } else {
-                updateDisplay('?');
-            }
-        });
-    }
-
-    // Toast 工具
+    // ========= Toast 工具 & 按鈕綁定 =========
     const toastEl = document.getElementById('toastMsg');
     let toastTimer = null;
     window.showToast = function(msg) {
@@ -733,7 +721,13 @@
         if (btns[4]) btns[4].addEventListener('click', () => showToast('🎵 追蹤抖音 TikTok · 精彩短影音'));
     }
 
-    console.log('✅ 歡迎彈窗、即時時間、座右銘按鈕已載入');
+    // ========= 啟動計數器（在頁面載入時執行） =========
+    window.addEventListener('load', function() {
+        startRealtimeCounter();
+        console.log('✅ 瀏覽次數計數器已啟動，資料庫路徑: total_views');
+    });
+
+    console.log('✅ Chan Hyc 秘密基地已載入');
 </script>
 </body>
 </html>
