@@ -115,7 +115,7 @@
             opacity: 1;
         }
 
-        /* ========= 原有样式 + 时间置中强化 ========= */
+        /* ========= 原有样式 ========= */
         .marquee-wrapper {
             position: sticky;
             top: 0;
@@ -170,7 +170,6 @@
             color: transparent;
             margin-bottom: 0.8rem;
         }
-        /* 时间显示区域 - 强制水平置中 */
         .time-display {
             text-align: center;
             background: rgba(0, 0, 0, 0.3);
@@ -188,15 +187,97 @@
             margin-left: auto;
             margin-right: auto;
         }
-        .bio {
-            text-align: center;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 1rem;
-            border-radius: 1.5rem;
+
+        /* ===== 座右銘按鈕 ===== */
+        .motto-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: rgba(25, 30, 45, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.9rem;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-decoration: none;
+            color: #F1F3FF;
+            transition: 0.25s;
+            cursor: pointer;
+            width: 100%;
             margin-bottom: 1.8rem;
-            line-height: 1.65;
-            white-space: pre-line;
+            font-family: inherit;
         }
+        .motto-btn:hover {
+            background: rgba(85, 70, 180, 0.7);
+            transform: scale(1.02);
+        }
+        .motto-btn i {
+            font-size: 1.3rem;
+            color: #b7adff;
+        }
+
+        /* ===== 座右銘彈窗 ===== */
+        .motto-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+        .motto-overlay.active {
+            display: flex;
+        }
+        .motto-card {
+            background: rgba(18, 22, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 2.5rem;
+            padding: 2rem 2rem 2.2rem;
+            max-width: 420px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.6);
+            animation: fadeInScale 0.3s ease-out;
+            position: relative;
+        }
+        .motto-card .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            background: none;
+            border: none;
+            color: #8e93b0;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .motto-card .close-btn:hover {
+            color: #fff;
+        }
+        .motto-card .motto-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #cdc7ff;
+            margin-bottom: 1.2rem;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        .motto-card .motto-content {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #e0e2f5;
+            white-space: pre-line;
+            text-align: center;
+            font-weight: 400;
+        }
+
         .links-grid {
             display: flex;
             flex-direction: column;
@@ -220,6 +301,67 @@
             background: rgba(85, 70, 180, 0.7);
             transform: scale(1.02);
         }
+
+        /* ========= 倒數計時器樣式 ========= */
+        .countdown-container {
+            background: rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(4px);
+            border-radius: 60px;
+            padding: 0.8rem 1.2rem;
+            margin-bottom: 0.2rem;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.2s;
+            user-select: none;
+        }
+        .countdown-container:hover {
+            background: rgba(85, 70, 180, 0.2);
+        }
+        .countdown-label {
+            font-size: 0.6rem;
+            color: #8e93b0;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+        .countdown-main {
+            font-family: 'Inter', monospace;
+            font-weight: 700;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+            color: #e8eaff;
+            text-shadow: 0 0 10px rgba(106, 90, 205, 0.15);
+            line-height: 1.2;
+        }
+        .countdown-main .unit {
+            font-size: 1rem;
+            color: #9f9fcf;
+            font-weight: 500;
+            margin-left: 2px;
+        }
+        .countdown-main .sep {
+            color: #6a6f8a;
+            margin: 0 4px;
+            font-weight: 300;
+        }
+        .countdown-sub {
+            font-family: 'Inter', monospace;
+            font-weight: 500;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            color: #b4b7d6;
+            margin-top: 2px;
+        }
+        .countdown-hint {
+            font-size: 0.55rem;
+            color: #6a6f8a;
+            margin-top: 4px;
+        }
+        .countdown-hint i {
+            font-size: 0.5rem;
+            margin-right: 3px;
+        }
+
         .fixed-footer {
             position: fixed;
             bottom: 0;
@@ -265,15 +407,18 @@
         }
         @media (max-width: 450px) {
             .name { font-size: 1.7rem; }
-            .bio { font-size: 0.88rem; }
             .welcome-text { font-size: 1.3rem; }
             .time-display { font-size: 0.75rem; padding: 0.4rem 0.8rem; }
+            .countdown-main { font-size: 1.4rem; }
+            .countdown-sub { font-size: 0.8rem; }
+            .motto-card { padding: 1.5rem; }
+            .motto-card .motto-content { font-size: 0.9rem; }
         }
     </style>
 </head>
 <body>
 
-<!-- 欢迎弹窗 (所有文字跳动) -->
+<!-- 欢迎弹窗 -->
 <div id="welcomeOverlay" class="welcome-overlay">
     <div class="welcome-card">
         <div class="welcome-text">
@@ -289,12 +434,12 @@
     </div>
 </div>
 
-<!-- 主内容包装 -->
+<!-- 主内容 -->
 <div id="mainWrapper" class="main-wrapper">
     <div class="marquee-wrapper">
         <div class="marquee-track">
-            <span>✨ 歡迎來到我的個人網頁！可以私訊官方賴，官方賴id：@517vqktq（記得加上@） ✨🔮 正在載入未知宇宙... 你是第 99,999 位造訪這個秘密基地的地球人。</span>
-            <span>✨ 歡迎來到我的個人網頁！可以私訊官方賴，官方賴id：@517vqktq（記得加上@） ✨🔮 正在載入未知宇宙... 你是第 99,999 位造訪這個秘密基地的地球人。</span>
+            <span>📢 歡迎來到歡迎來到我的個人網頁！可以私訊官方賴，官方賴id：@517vqktq（記得加上@）！請善用本網頁多多了解我，也可以使用匿名問問題 💬 ⚠️ 溫馨提醒：匿名是保護大家，是給不敢當面問的，而不是讓人亂來！</span>
+            <span>📢 歡迎來到歡迎來到我的個人網頁！可以私訊官方賴，官方賴id：@517vqktq（記得加上@）！請善用本網頁多多了解我，也可以使用匿名問問題 💬 ⚠️ 溫馨提醒：匿名是保護大家，是給不敢當面問的，而不是讓人亂來！</span>
         </div>
     </div>
 
@@ -302,20 +447,30 @@
         <div class="container">
             <div class="profile-card">
                 <div class="name">chan hyc</div>
-                <!-- 动态时间显示：年月日 時分秒 星期，已置中 -->
                 <div class="time-display" id="liveDateTime">-- 年 -- 月 -- 日 -- : -- : -- 星期-</div>
-                <div class="bio">
-                    珍惜當下! 不留遺憾<br>
-                    把握當下每一分每一秒<br>
-                    錯過了僅可當回憶<br>
-                    人生這道題<br>
-                    無論怎麼選都會有遺憾<br>
-                    聚散離合本就是人生常態
-                </div>
+
+                <!-- 座右銘按鈕 (位於日期下方) -->
+                <button class="motto-btn" id="mottoBtn">
+                    <i class="fas fa-quote-left"></i> 座右銘
+                </button>
+
+                <!-- 原本的 bio 已刪除 -->
+
                 <div class="links-grid">
+                    <!-- 匿名按钮 -->
                     <a href="https://ngl.link/www278278a?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAdGRzdgR39oFleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA81NjcwNjczNDMzNTI0MjcAAad1QHgTFR0yQpY9qU7hXsEEkMnMy00dPx05wETCkD6MYZziI1NdfSYkonQisw_aem_YRlYAVt9TJrgoe9I48i-OQ" target="_blank" rel="noopener noreferrer" class="link-btn">
                         <i class="fas fa-user-secret"></i><span>匿名</span>
                     </a>
+
+                    <!-- 倒數計時器 -->
+                    <div class="countdown-container" id="countdownContainer" title="點擊切換顯示格式">
+                        <div class="countdown-label">⏳ 距離 2026.06.28</div>
+                        <div class="countdown-main" id="countdownMain">-- <span class="unit">天</span></div>
+                        <div class="countdown-sub" id="countdownSub">-- : -- : --</div>
+                        <div class="countdown-hint"><i class="fas fa-mouse-pointer"></i> 點擊切換格式</div>
+                    </div>
+
+                    <!-- 其他按钮 -->
                     <a href="https://lin.ee/NO8O6j4" target="_blank" rel="noopener noreferrer" class="link-btn">
                         <i class="fab fa-line"></i><span>官方LINE · @517vqktq</span>
                     </a>
@@ -341,8 +496,48 @@
     <div id="toastMsg" class="toast-msg">✨ 操作成功</div>
 </div>
 
+<!-- 座右銘彈窗 -->
+<div class="motto-overlay" id="mottoOverlay">
+    <div class="motto-card">
+        <button class="close-btn" id="mottoCloseBtn">&times;</button>
+        <div class="motto-title">📜 座 右 銘</div>
+        <div class="motto-content">
+            珍惜當下! 不留遺憾
+            把握當下每一分每一秒
+            錯過了僅可當回憶
+            人生這道題
+            無論怎麼選都會有遺憾
+            聚散離合本就是人生常態
+            不要被女人左右
+            要左右都是女人
+        </div>
+    </div>
+</div>
+
 <script>
-    // ========= 实时更新时间（年月日时分秒星期） =========
+    // ========= 座右銘彈窗控制 =========
+    const mottoBtn = document.getElementById('mottoBtn');
+    const mottoOverlay = document.getElementById('mottoOverlay');
+    const mottoCloseBtn = document.getElementById('mottoCloseBtn');
+
+    mottoBtn.addEventListener('click', () => {
+        mottoOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+
+    mottoCloseBtn.addEventListener('click', () => {
+        mottoOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    });
+
+    mottoOverlay.addEventListener('click', (e) => {
+        if (e.target === mottoOverlay) {
+            mottoOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+
+    // ========= 实时更新时间 =========
     function updateDateTime() {
         const now = new Date();
         const year = now.getFullYear();
@@ -359,6 +554,96 @@
     }
     updateDateTime();
     setInterval(updateDateTime, 1000);
+
+    // ========= 倒數計時器 (目標日期: 2026-06-28) =========
+    const TARGET_DATE = new Date(2026, 5, 28);
+    const mainDisplay = document.getElementById('countdownMain');
+    const subDisplay = document.getElementById('countdownSub');
+    let mode = 0; // 0: 天, 1: 月+天, 2: 週+天
+    const MODE_NAMES = ['天', '個月 + 天', '週 + 天'];
+
+    function getTargetDate() {
+        const now = new Date();
+        let target = new Date(TARGET_DATE);
+        target = new Date(Date.UTC(target.getFullYear(), target.getMonth(), target.getDate(), 0, 0, 0));
+        const nowUTC = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0));
+        while (target <= nowUTC) {
+            target.setFullYear(target.getFullYear() + 1);
+        }
+        return target;
+    }
+
+    function getCountdownParts() {
+        const now = new Date();
+        const target = getTargetDate();
+        const nowUTC = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds());
+        const targetUTC = Date.UTC(target.getFullYear(), target.getMonth(), target.getDate(), 0, 0, 0);
+        let diff = targetUTC - nowUTC;
+        if (diff < 0) diff = 0;
+
+        const totalSeconds = Math.floor(diff / 1000);
+        const totalMinutes = Math.floor(totalSeconds / 60);
+        const totalHours = Math.floor(totalMinutes / 60);
+        const totalDays = Math.floor(totalHours / 24);
+        const totalWeeks = Math.floor(totalDays / 7);
+        const totalMonths = Math.floor(totalDays / 30);
+
+        const seconds = totalSeconds % 60;
+        const minutes = totalMinutes % 60;
+        const hours = totalHours % 24;
+        const daysRemainder = totalDays % 30;
+        const daysRemainderWeek = totalDays % 7;
+
+        const pad = (n) => String(n).padStart(2, '0');
+
+        return {
+            totalDays,
+            totalWeeks,
+            totalMonths,
+            daysRemainder,
+            daysRemainderWeek,
+            hours: pad(hours),
+            minutes: pad(minutes),
+            seconds: pad(seconds)
+        };
+    }
+
+    function updateCountdown() {
+        const parts = getCountdownParts();
+        const subStr = `${parts.hours} : ${parts.minutes} : ${parts.seconds}`;
+
+        let mainHtml = '';
+
+        switch (mode) {
+            case 0:
+                mainHtml = `${parts.totalDays} <span class="unit">天</span>`;
+                break;
+            case 1:
+                mainHtml = `${parts.totalMonths} <span class="unit">個月</span><span class="sep"> </span>${parts.daysRemainder} <span class="unit">天</span>`;
+                break;
+            case 2:
+                mainHtml = `${parts.totalWeeks} <span class="unit">週</span><span class="sep"> </span>${parts.daysRemainderWeek} <span class="unit">天</span>`;
+                break;
+            default:
+                mainHtml = `${parts.totalDays} <span class="unit">天</span>`;
+        }
+
+        mainDisplay.innerHTML = mainHtml;
+        subDisplay.innerText = subStr;
+    }
+
+    document.getElementById('countdownContainer').addEventListener('click', function() {
+        mode = (mode + 1) % 3;
+        const hint = this.querySelector('.countdown-hint');
+        if (hint) {
+            hint.innerHTML = `<i class="fas fa-mouse-pointer"></i> ${MODE_NAMES[mode]}`;
+        }
+        updateCountdown();
+        showToast(`📅 切換為 ${MODE_NAMES[mode]}`);
+    });
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
 
     // ========= 弹窗逻辑 =========
     const overlay = document.getElementById('welcomeOverlay');
@@ -379,9 +664,9 @@
     }
 
     enterBtn.addEventListener('click', enterSite);
-    document.body.style.overflow = 'hidden';  // 弹窗时禁止背景滚动
+    document.body.style.overflow = 'hidden';
 
-    // ========= Firebase 原子计数器（延迟到进入后加载） =========
+    // ========= Firebase 原子计数器 =========
     let counterInitialized = false;
 
     function initCounter() {
@@ -423,7 +708,7 @@
         });
     }
 
-    // Toast 工具 & 按钮提示
+    // Toast 工具
     const toastEl = document.getElementById('toastMsg');
     let toastTimer = null;
     window.showToast = function(msg) {
@@ -448,7 +733,7 @@
         if (btns[4]) btns[4].addEventListener('click', () => showToast('🎵 追蹤抖音 TikTok · 精彩短影音'));
     }
 
-    console.log('✅ 欢迎弹窗、跳动文字、实时时间已置中，点击進入後開始計數');
+    console.log('✅ 歡迎彈窗、即時時間、座右銘按鈕已載入');
 </script>
 </body>
 </html>
