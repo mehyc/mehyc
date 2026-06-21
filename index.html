@@ -461,9 +461,9 @@
                         <i class="fas fa-user-secret"></i><span>匿名</span>
                     </a>
 
-                    <!-- 倒數計時器 -->
+                    <!-- 倒數計時器（標題已改為「🎂 距離生日」） -->
                     <div class="countdown-container" id="countdownContainer" title="點擊切換顯示格式">
-                        <div class="countdown-label">⏳ 距離 2026.06.28</div>
+                        <div class="countdown-label">🎂 距離生日</div>
                         <div class="countdown-main" id="countdownMain">-- <span class="unit">天</span></div>
                         <div class="countdown-sub" id="countdownSub">-- : -- : --</div>
                         <div class="countdown-hint"><i class="fas fa-mouse-pointer"></i> 點擊切換格式</div>
@@ -523,15 +523,12 @@
         try {
             firebase.initializeApp(firebaseConfig);
             const db = firebase.database();
-            // ✅ 使用 total_views 路徑
             const viewsRef = db.ref('total_views');
 
-            // 原子 +1（使用 transaction，避免多人同時寫入時產生衝突）
             viewsRef.transaction((currentValue) => {
                 return (currentValue || 0) + 1;
             });
 
-            // 監聽即時變化，更新顯示
             viewsRef.on('value', (snapshot) => {
                 const count = snapshot.val();
                 const viewElem = document.getElementById('total_view_display');
@@ -721,7 +718,7 @@
         if (btns[4]) btns[4].addEventListener('click', () => showToast('🎵 追蹤抖音 TikTok · 精彩短影音'));
     }
 
-    // ========= 啟動計數器（在頁面載入時執行） =========
+    // ========= 啟動計數器 =========
     window.addEventListener('load', function() {
         startRealtimeCounter();
         console.log('✅ 瀏覽次數計數器已啟動，資料庫路徑: total_views');
