@@ -461,7 +461,7 @@
                         <i class="fas fa-user-secret"></i><span>匿名</span>
                     </a>
 
-                    <!-- 倒數計時器（標題固定為「🎂 距離生日」） -->
+                    <!-- 倒數計時器 -->
                     <div class="countdown-container" id="countdownContainer" title="點擊切換顯示格式">
                         <div class="countdown-label">🎂 距離生日</div>
                         <div class="countdown-main" id="countdownMain">-- <span class="unit">天</span></div>
@@ -593,9 +593,21 @@
     function getTargetDate() {
         const now = new Date();
         let target = new Date(TARGET_DATE);
+        // 設定目標為 UTC 00:00:00
         target = new Date(Date.UTC(target.getFullYear(), target.getMonth(), target.getDate(), 0, 0, 0));
-        const nowUTC = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0));
-        while (target <= nowUTC) {
+        
+        // 計算今天是今年的第幾天
+        const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const targetDate = new Date(target.getFullYear(), target.getMonth(), target.getDate());
+        
+        // 如果目標日期已經過了今天（且不是今天），則加1年
+        // 但如果是今天，不加年（讓它顯示「生日快樂」）
+        if (targetDate < nowDate) {
+            target.setFullYear(target.getFullYear() + 1);
+        }
+        // 如果加完一年後還是小於今天（極端情況，例如2/29），再加一年
+        const targetDate2 = new Date(target.getFullYear(), target.getMonth(), target.getDate());
+        if (targetDate2 < nowDate) {
             target.setFullYear(target.getFullYear() + 1);
         }
         return target;
@@ -604,23 +616,32 @@
     function getCountdownParts() {
         const now = new Date();
         const target = getTargetDate();
+        
+        // 使用 UTC 計算總毫秒差
         const nowUTC = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds());
         const targetUTC = Date.UTC(target.getFullYear(), target.getMonth(), target.getDate(), 0, 0, 0);
         let diff = targetUTC - nowUTC;
-        
-        // 計算天數差（僅日期，不含時間）
-        const nowDateUTC = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
-        const dayDiff = Math.floor((targetUTC - nowDateUTC) / (1000 * 60 * 60 * 24));
+        if (diff < 0) diff = 0;
+
+        // 判斷是否為今天（比較年、月、日）
+        const isToday = now.getFullYear() === target.getFullYear() &&
+                        now.getMonth() === target.getMonth() &&
+                        now.getDate() === target.getDate();
+
+        // 判斷是否為明天（目標 = 今天 + 1 天）
+        const tomorrow = new Date(now);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const isTomorrow = tomorrow.getFullYear() === target.getFullYear() &&
+                           tomorrow.getMonth() === target.getMonth() &&
+                           tomorrow.getDate() === target.getDate();
 
         // 判斷特殊狀態
-        let specialStatus = null; // 'tomorrow', 'today', null
-        if (dayDiff === 1) {
-            specialStatus = 'tomorrow';
-        } else if (dayDiff === 0) {
+        let specialStatus = null;
+        if (isToday) {
             specialStatus = 'today';
+        } else if (isTomorrow) {
+            specialStatus = 'tomorrow';
         }
-
-        if (diff < 0) diff = 0;
 
         const totalSeconds = Math.floor(diff / 1000);
         const totalMinutes = Math.floor(totalSeconds / 60);
@@ -647,7 +668,8 @@
             minutes: pad(minutes),
             seconds: pad(seconds),
             specialStatus,
-            dayDiff,
+            isToday,
+            isTomorrow,
             target
         };
     }
@@ -655,12 +677,11 @@
     function updateCountdown() {
         const parts = getCountdownParts();
         
-        // 標題固定不變
         let subStr = '';
         let mainHtml = '';
 
         if (parts.specialStatus === 'today') {
-            // 當天：顯示「就是今天」，時間不用倒數
+            // 當天：顯示「生日快樂」，時間不顯示
             mainHtml = `🎉 生日快樂 🎉`;
             subStr = '';
         } else if (parts.specialStatus === 'tomorrow') {
@@ -693,7 +714,6 @@
     // 點擊切換模式
     document.getElementById('countdownContainer').addEventListener('click', function() {
         const parts = getCountdownParts();
-        // 只有非特殊狀態（不是今天或明天）才能切換模式
         if (parts.specialStatus === 'today' || parts.specialStatus === 'tomorrow') {
             showToast('🎉 今天是特別的日子，不能切換格式喔！');
             return;
