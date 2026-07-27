@@ -20,20 +20,20 @@
             overflow-x: hidden;
         }
 
-        /* ========= 弹窗遮罩层 ========= */
+        /* ========= 欢迎弹窗（文字上下晃動 + 翻轉） ========= */
         .welcome-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.92);
             backdrop-filter: blur(12px);
             z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
             opacity: 1;
             visibility: visible;
         }
@@ -42,75 +42,63 @@
             visibility: hidden;
         }
         .welcome-card {
-            background: rgba(18, 22, 35, 0.95);
+            background: rgba(18, 22, 35, 0.8);
             backdrop-filter: blur(20px);
             border-radius: 2.5rem;
-            padding: 2rem 1.8rem;
-            max-width: 340px;
-            width: 85%;
+            padding: 2.5rem 2rem;
+            max-width: 420px;
+            width: 90%;
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.5);
-            animation: fadeInScale 0.4s ease-out;
-        }
-        @keyframes fadeInScale {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
         }
         .welcome-text {
-            font-size: 1.7rem;
+            font-size: 1.8rem;
             font-weight: 700;
-            margin-bottom: 1.5rem;
-            line-height: 1.4;
+            margin-bottom: 0.8rem;
+            line-height: 1.5;
             color: #fff;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 0.2rem 0.5rem;
-        }
-        .bounce-text {
             display: inline-block;
-            animation: bounce 0.9s ease infinite;
-            transform-origin: center;
+            transform-style: preserve-3d;
+            perspective: 600px;
+            animation: flipBounce 1.0s ease-in-out infinite;
         }
-        .welcome-text .bounce-text:nth-child(1) { animation-delay: 0s; }
-        .welcome-text .bounce-text:nth-child(2) { animation-delay: 0.1s; }
-        .welcome-text .bounce-text:nth-child(3) { animation-delay: 0.2s; }
-        .welcome-text .bounce-text:nth-child(4) { animation-delay: 0.05s; }
-        .welcome-text .bounce-text:nth-child(5) { animation-delay: 0.15s; }
-        .welcome-text .bounce-text:nth-child(6) { animation-delay: 0.25s; }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        @keyframes flipBounce {
+            0%   { transform: translateY(0px) rotateX(0deg) rotateY(0deg); }
+            15%  { transform: translateY(-8px) rotateX(5deg) rotateY(8deg); }
+            30%  { transform: translateY(0px) rotateX(0deg) rotateY(15deg); }
+            45%  { transform: translateY(8px) rotateX(-5deg) rotateY(8deg); }
+            60%  { transform: translateY(0px) rotateX(0deg) rotateY(0deg); }
+            75%  { transform: translateY(-5px) rotateX(8deg) rotateY(-8deg); }
+            90%  { transform: translateY(5px) rotateX(-8deg) rotateY(-4deg); }
+            100% { transform: translateY(0px) rotateX(0deg) rotateY(0deg); }
+        }
+        .welcome-text .highlight {
+            background: linear-gradient(115deg, #FFF, #cdc7ff);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
         }
         .welcome-sub {
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             color: #cdd0f0;
-            margin-bottom: 2rem;
-            opacity: 0.8;
+            opacity: 0.85;
+            letter-spacing: 1px;
+            display: block;
+            margin-top: 10px;
         }
-        .enter-btn {
-            background: linear-gradient(115deg, #6f5cf1, #aa4eff);
-            border: none;
-            padding: 0.8rem 1.8rem;
-            border-radius: 60px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: white;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 12px rgba(106, 90, 205, 0.4);
-        }
-        .enter-btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 8px 20px rgba(106, 90, 205, 0.6);
+
+        /* 自動淡出延遲（3.5秒後開始淡出，4.3秒後完全消失） */
+        .welcome-overlay.auto-hide {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
         }
 
         /* 主内容初始半透明，弹窗关闭后显示 */
         .main-wrapper {
             opacity: 0;
-            transition: opacity 0.6s ease;
+            transition: opacity 0.8s ease;
         }
         .main-wrapper.visible {
             opacity: 1;
@@ -187,6 +175,210 @@
             width: fit-content;
             margin-left: auto;
             margin-right: auto;
+        }
+
+        /* ===== 個人資料按鈕 ===== */
+        .info-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: rgba(25, 30, 45, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.9rem;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-decoration: none;
+            color: #F1F3FF;
+            transition: 0.25s;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 1rem;
+            font-family: inherit;
+        }
+        .info-btn:hover {
+            background: rgba(85, 70, 180, 0.7);
+            transform: scale(1.02);
+        }
+        .info-btn i {
+            font-size: 1.3rem;
+            color: #b7adff;
+        }
+
+        /* ===== 個人資料彈窗 ===== */
+        .info-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+        .info-overlay.active {
+            display: flex;
+        }
+        .info-card {
+            background: rgba(18, 22, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 2.5rem;
+            padding: 2rem 2rem 2.2rem;
+            max-width: 380px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.6);
+            animation: fadeInScale 0.3s ease-out;
+            position: relative;
+        }
+        .info-card .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            background: none;
+            border: none;
+            color: #8e93b0;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .info-card .close-btn:hover {
+            color: #fff;
+        }
+        .info-card .info-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #cdc7ff;
+            margin-bottom: 1.2rem;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        .info-card .info-content {
+            font-size: 1rem;
+            line-height: 2;
+            color: #e0e2f5;
+            text-align: left;
+            font-weight: 400;
+            padding: 0 0.5rem;
+        }
+        .info-card .info-content .label {
+            color: #9f9fcf;
+            font-weight: 300;
+        }
+        .info-card .info-content .value {
+            color: #f0f0ff;
+            font-weight: 500;
+        }
+
+        /* ===== 巨蟹座按鈕 ===== */
+        .cancer-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: rgba(25, 30, 45, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.9rem;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-decoration: none;
+            color: #F1F3FF;
+            transition: 0.25s;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 1rem;
+            font-family: inherit;
+        }
+        .cancer-btn:hover {
+            background: rgba(85, 70, 180, 0.7);
+            transform: scale(1.02);
+        }
+        .cancer-btn i {
+            font-size: 1.3rem;
+            color: #b7adff;
+        }
+
+        /* ===== 巨蟹座彈窗 ===== */
+        .cancer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+        .cancer-overlay.active {
+            display: flex;
+        }
+        .cancer-card {
+            background: rgba(18, 22, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 2.5rem;
+            padding: 2rem 2rem 2.2rem;
+            max-width: 480px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.6);
+            animation: fadeInScale 0.3s ease-out;
+            position: relative;
+        }
+        .cancer-card::-webkit-scrollbar {
+            width: 4px;
+        }
+        .cancer-card::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        .cancer-card::-webkit-scrollbar-thumb {
+            background: rgba(170, 126, 255, 0.4);
+            border-radius: 10px;
+        }
+        .cancer-card .close-btn {
+            position: sticky;
+            top: 0;
+            float: right;
+            background: none;
+            border: none;
+            color: #8e93b0;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s;
+            z-index: 10;
+        }
+        .cancer-card .close-btn:hover {
+            color: #fff;
+        }
+        .cancer-card .cancer-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #cdc7ff;
+            margin-bottom: 1rem;
+            text-align: center;
+            letter-spacing: 1px;
+            clear: both;
+        }
+        .cancer-card .cancer-content {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            color: #e0e2f5;
+            white-space: pre-line;
+            text-align: left;
+            font-weight: 400;
+            padding: 0 0.5rem;
         }
 
         /* ===== 座右銘按鈕 ===== */
@@ -406,14 +598,22 @@
             from { opacity: 0; transform: translateY(18px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
         @media (max-width: 450px) {
             .name { font-size: 1.7rem; }
-            .welcome-text { font-size: 1.3rem; }
+            .welcome-text { font-size: 1.4rem; }
             .time-display { font-size: 0.75rem; padding: 0.4rem 0.8rem; }
             .countdown-main { font-size: 1.4rem; }
             .countdown-sub { font-size: 0.8rem; }
             .motto-card { padding: 1.5rem; }
             .motto-card .motto-content { font-size: 0.9rem; }
+            .info-card { padding: 1.5rem; }
+            .info-card .info-content { font-size: 0.9rem; }
+            .cancer-card { padding: 1.5rem; max-height: 80vh; }
+            .cancer-card .cancer-content { font-size: 0.88rem; }
         }
     </style>
 </head>
@@ -423,15 +623,11 @@
 <div id="welcomeOverlay" class="welcome-overlay">
     <div class="welcome-card">
         <div class="welcome-text">
-            <span class="bounce-text">✨</span>
-            <span class="bounce-text">歡迎使用</span>
-            <span class="bounce-text">chan hyc</span>
-            <span class="bounce-text">的</span>
-            <span class="bounce-text">個人網站</span>
-            <span class="bounce-text">✨</span>
+            歡迎使用<br>
+            <span class="highlight">chan hyc</span><br>
+            的個人網站
         </div>
         <div class="welcome-sub">探索創意 · 匿名連結 · 即時互動</div>
-        <button id="enterBtn" class="enter-btn">✦ 進 入 ✦</button>
     </div>
 </div>
 
@@ -449,6 +645,16 @@
             <div class="profile-card">
                 <div class="name">chan hyc</div>
                 <div class="time-display" id="liveDateTime">-- 年 -- 月 -- 日 -- : -- : -- 星期-</div>
+
+                <!-- 個人資料按鈕 -->
+                <button class="info-btn" id="infoBtn">
+                    <i class="fas fa-id-card"></i> 個人資料
+                </button>
+
+                <!-- 巨蟹座按鈕 -->
+                <button class="cancer-btn" id="cancerBtn">
+                    <i class="fas fa-crab"></i> 巨蟹座
+                </button>
 
                 <!-- 座右銘按鈕 -->
                 <button class="motto-btn" id="mottoBtn">
@@ -495,7 +701,76 @@
     <div id="toastMsg" class="toast-msg">✨ 操作成功</div>
 </div>
 
-<!-- 座右銘彈窗 -->
+<!-- 個人資料彈窗 -->
+<div class="info-overlay" id="infoOverlay">
+    <div class="info-card">
+        <button class="close-btn" id="infoCloseBtn">&times;</button>
+        <div class="info-title">👤 個 人 資 料</div>
+        <div class="info-content">
+            <span class="label">📍 哪裡人：</span><span class="value">彰化人</span><br>
+            <span class="label">🎓 學歷：</span><span class="value">就讀高中職</span><br>
+            <span class="label">📅 幾年：</span><span class="value">09年</span><br>
+            <span class="label">🎂 生日：</span><span class="value">0628</span><br>
+            <span class="label">🧒 年齡：</span><span class="value">17歲</span><br>
+            <span class="label">♋ 星座：</span><span class="value">巨蟹座</span><br>
+            <span class="label">🩸 血型：</span><span class="value">Aˉ</span>
+        </div>
+    </div>
+</div>
+
+<!-- 巨蟹座彈窗 -->
+<div class="cancer-overlay" id="cancerOverlay">
+    <div class="cancer-card">
+        <button class="close-btn" id="cancerCloseBtn">&times;</button>
+        <div class="cancer-title">♋ 巨 蟹 座</div>
+        <div class="cancer-content">
+巨蟹座簡述
+=情感細膩+共感力強+敏感脆弱+表面溫和+情緒海洋+超級顧家+極度念舊+重視陪伴+習慣壓抑不說+愛一個人很深+放不下也說不出口+安全感至上+小事就會胡思亂想+偷偷心軟+外柔內韌+害怕失去+愛一個人就會付出一切=巨蟹座
+
+
+巨蟹座嘴上說沒事其實心裡早就……
+有些話，巨蟹不是不想說
+只是習慣藏在心裡
+把你的每一句話
+都放在心上
+巨蟹不是記性特別好
+而是對在乎的人特別敏感
+你可能只是隨口一句話
+他卻會默默記很久
+不是愛計較
+只是因為你很重要，所以才會在意
+偷偷難過
+卻笑著說沒事
+巨蟹很習慣照顧別人的感受
+卻常常忘了照顧自己的情緒
+明明心裡有委屈
+嘴上卻還是說：「沒事啦。」
+不是沒有情緒
+只是習慣自己消化
+一次次包容
+也一次次失望
+巨蟹不是沒有底線
+只是對在乎的人總是比較心軟
+一次次給機會
+一次次告訴自己再相信一次
+直到失望累積久久
+才會選擇慢慢退開
+慢慢收回自己的真心
+巨蟹認定一個人時
+會給很多耐心和偏愛
+但當他開始不再分享生活
+不再期待你的回應
+不是不愛了
+而是學會把心收回來
+巨蟹不是愛多想，只是把每一份在乎
+都放得輕鬆
+有些事情不是忘不了
+而是曾經真的很珍惜
+        </div>
+    </div>
+</div>
+
+<!-- 座右銘彈窗（已修改「要上下左右都是女人」） -->
 <div class="motto-overlay" id="mottoOverlay">
     <div class="motto-card">
         <button class="close-btn" id="mottoCloseBtn">&times;</button>
@@ -508,12 +783,29 @@
             無論怎麼選都會有遺憾
             聚散離合本就是人生常態
             不要被女人左右
-            要左右都是女人
+            要上下左右都是女人
         </div>
     </div>
 </div>
 
 <script>
+    // ========= 歡迎彈窗自動淡出（3.5秒後開始淡出） =========
+    const welcomeOverlay = document.getElementById('welcomeOverlay');
+    const mainWrapper = document.getElementById('mainWrapper');
+
+    setTimeout(() => {
+        welcomeOverlay.classList.add('auto-hide');
+        setTimeout(() => {
+            welcomeOverlay.style.display = 'none';
+            mainWrapper.classList.add('visible');
+            if (typeof startRealtimeCounter === 'function') startRealtimeCounter();
+            if (typeof bindButtons === 'function') bindButtons();
+            document.body.style.overflow = '';
+        }, 800);
+    }, 3500);
+
+    document.body.style.overflow = 'hidden';
+
     // ========= Firebase 瀏覽次數計數器 =========
     const firebaseConfig = {
         databaseURL: "https://mehyc-7eabb-default-rtdb.asia-southeast1.firebasedatabase.app/"
@@ -521,7 +813,9 @@
 
     function startRealtimeCounter() {
         try {
-            firebase.initializeApp(firebaseConfig);
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
             const db = firebase.database();
             const viewsRef = db.ref('total_views');
 
@@ -542,6 +836,50 @@
             if (viewElem) viewElem.innerText = "暫時無法顯示";
         }
     }
+
+    // ========= 個人資料彈窗控制 =========
+    const infoBtn = document.getElementById('infoBtn');
+    const infoOverlay = document.getElementById('infoOverlay');
+    const infoCloseBtn = document.getElementById('infoCloseBtn');
+
+    infoBtn.addEventListener('click', () => {
+        infoOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+
+    infoCloseBtn.addEventListener('click', () => {
+        infoOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    });
+
+    infoOverlay.addEventListener('click', (e) => {
+        if (e.target === infoOverlay) {
+            infoOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+
+    // ========= 巨蟹座彈窗控制 =========
+    const cancerBtn = document.getElementById('cancerBtn');
+    const cancerOverlay = document.getElementById('cancerOverlay');
+    const cancerCloseBtn = document.getElementById('cancerCloseBtn');
+
+    cancerBtn.addEventListener('click', () => {
+        cancerOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+
+    cancerCloseBtn.addEventListener('click', () => {
+        cancerOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    });
+
+    cancerOverlay.addEventListener('click', (e) => {
+        if (e.target === cancerOverlay) {
+            cancerOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
 
     // ========= 座右銘彈窗控制 =========
     const mottoBtn = document.getElementById('mottoBtn');
@@ -587,25 +925,18 @@
     const TARGET_DATE = new Date(2026, 5, 28);
     const mainDisplay = document.getElementById('countdownMain');
     const subDisplay = document.getElementById('countdownSub');
-    let mode = 0; // 0: 天, 1: 月+天, 2: 週+天
+    let mode = 0;
     const MODE_NAMES = ['天', '個月 + 天', '週 + 天'];
 
     function getTargetDate() {
         const now = new Date();
         let target = new Date(TARGET_DATE);
-        // 設定目標為 UTC 00:00:00
         target = new Date(Date.UTC(target.getFullYear(), target.getMonth(), target.getDate(), 0, 0, 0));
-        
-        // 計算今天是今年的第幾天
         const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         const targetDate = new Date(target.getFullYear(), target.getMonth(), target.getDate());
-        
-        // 如果目標日期已經過了今天（且不是今天），則加1年
-        // 但如果是今天，不加年（讓它顯示「生日快樂」）
         if (targetDate < nowDate) {
             target.setFullYear(target.getFullYear() + 1);
         }
-        // 如果加完一年後還是小於今天（極端情況，例如2/29），再加一年
         const targetDate2 = new Date(target.getFullYear(), target.getMonth(), target.getDate());
         if (targetDate2 < nowDate) {
             target.setFullYear(target.getFullYear() + 1);
@@ -616,32 +947,24 @@
     function getCountdownParts() {
         const now = new Date();
         const target = getTargetDate();
-        
-        // 使用 UTC 計算總毫秒差
         const nowUTC = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds());
         const targetUTC = Date.UTC(target.getFullYear(), target.getMonth(), target.getDate(), 0, 0, 0);
         let diff = targetUTC - nowUTC;
         if (diff < 0) diff = 0;
 
-        // 判斷是否為今天（比較年、月、日）
         const isToday = now.getFullYear() === target.getFullYear() &&
                         now.getMonth() === target.getMonth() &&
                         now.getDate() === target.getDate();
 
-        // 判斷是否為明天（目標 = 今天 + 1 天）
         const tomorrow = new Date(now);
         tomorrow.setDate(tomorrow.getDate() + 1);
         const isTomorrow = tomorrow.getFullYear() === target.getFullYear() &&
                            tomorrow.getMonth() === target.getMonth() &&
                            tomorrow.getDate() === target.getDate();
 
-        // 判斷特殊狀態
         let specialStatus = null;
-        if (isToday) {
-            specialStatus = 'today';
-        } else if (isTomorrow) {
-            specialStatus = 'tomorrow';
-        }
+        if (isToday) specialStatus = 'today';
+        else if (isTomorrow) specialStatus = 'tomorrow';
 
         const totalSeconds = Math.floor(diff / 1000);
         const totalMinutes = Math.floor(totalSeconds / 60);
@@ -667,43 +990,28 @@
             hours: pad(hours),
             minutes: pad(minutes),
             seconds: pad(seconds),
-            specialStatus,
-            isToday,
-            isTomorrow,
-            target
+            specialStatus
         };
     }
 
     function updateCountdown() {
         const parts = getCountdownParts();
-        
         let subStr = '';
         let mainHtml = '';
 
         if (parts.specialStatus === 'today') {
-            // 當天：顯示「生日快樂」，時間不顯示
             mainHtml = `🎉 生日快樂 🎉`;
             subStr = '';
         } else if (parts.specialStatus === 'tomorrow') {
-            // 前一天：顯示「明天就是 🎂」，時間繼續倒數
             subStr = `${parts.hours} : ${parts.minutes} : ${parts.seconds}`;
             mainHtml = `明天就是 <span style="color:#ffd700;">🎂</span>`;
         } else {
-            // 一般情況
             subStr = `${parts.hours} : ${parts.minutes} : ${parts.seconds}`;
-
             switch (mode) {
-                case 0:
-                    mainHtml = `${parts.totalDays} <span class="unit">天</span>`;
-                    break;
-                case 1:
-                    mainHtml = `${parts.totalMonths} <span class="unit">個月</span><span class="sep"> </span>${parts.daysRemainder} <span class="unit">天</span>`;
-                    break;
-                case 2:
-                    mainHtml = `${parts.totalWeeks} <span class="unit">週</span><span class="sep"> </span>${parts.daysRemainderWeek} <span class="unit">天</span>`;
-                    break;
-                default:
-                    mainHtml = `${parts.totalDays} <span class="unit">天</span>`;
+                case 0: mainHtml = `${parts.totalDays} <span class="unit">天</span>`; break;
+                case 1: mainHtml = `${parts.totalMonths} <span class="unit">個月</span><span class="sep"> </span>${parts.daysRemainder} <span class="unit">天</span>`; break;
+                case 2: mainHtml = `${parts.totalWeeks} <span class="unit">週</span><span class="sep"> </span>${parts.daysRemainderWeek} <span class="unit">天</span>`; break;
+                default: mainHtml = `${parts.totalDays} <span class="unit">天</span>`;
             }
         }
 
@@ -711,7 +1019,6 @@
         subDisplay.innerText = subStr;
     }
 
-    // 點擊切換模式
     document.getElementById('countdownContainer').addEventListener('click', function() {
         const parts = getCountdownParts();
         if (parts.specialStatus === 'today' || parts.specialStatus === 'tomorrow') {
@@ -727,29 +1034,8 @@
         showToast(`📅 切換為 ${MODE_NAMES[mode]}`);
     });
 
-    // 每秒更新
     updateCountdown();
     setInterval(updateCountdown, 1000);
-
-    // ========= 弹窗逻辑 =========
-    const overlay = document.getElementById('welcomeOverlay');
-    const mainWrapper = document.getElementById('mainWrapper');
-    const enterBtn = document.getElementById('enterBtn');
-
-    function enterSite() {
-        overlay.classList.add('hide');
-        setTimeout(() => {
-            overlay.style.display = 'none';
-            mainWrapper.classList.add('visible');
-        }, 500);
-        setTimeout(() => {
-            if (typeof bindButtons === 'function') bindButtons();
-        }, 600);
-        setTimeout(() => { document.body.style.overflow = ''; }, 500);
-    }
-
-    enterBtn.addEventListener('click', enterSite);
-    document.body.style.overflow = 'hidden';
 
     // ========= Toast 工具 & 按鈕綁定 =========
     const toastEl = document.getElementById('toastMsg');
@@ -776,13 +1062,7 @@
         if (btns[4]) btns[4].addEventListener('click', () => showToast('🎵 追蹤抖音 TikTok · 精彩短影音'));
     }
 
-    // ========= 啟動計數器 =========
-    window.addEventListener('load', function() {
-        startRealtimeCounter();
-        console.log('✅ 瀏覽次數計數器已啟動，資料庫路徑: total_views');
-    });
-
-    console.log('✅ Chan Hyc 秘密基地已載入');
+    console.log('✅ Chan Hyc 秘密基地已載入（座右銘已更新）');
 </script>
 </body>
 </html>
