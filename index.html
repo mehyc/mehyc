@@ -667,6 +667,11 @@
                         <i class="fas fa-user-secret"></i><span>匿名</span>
                     </a>
 
+                    <!-- 預約系統按鈕（新增） -->
+                    <a href="https://mehyc.github.io/reserve/" target="_blank" rel="noopener noreferrer" class="link-btn">
+                        <i class="fas fa-calendar-check"></i><span>預約系統</span>
+                    </a>
+
                     <!-- 倒數計時器 -->
                     <div class="countdown-container" id="countdownContainer" title="點擊切換顯示格式">
                         <div class="countdown-label">🎂 距離生日</div>
@@ -1050,20 +1055,21 @@
     };
 
     function bindButtons() {
-        document.querySelectorAll('a[href^="http"], a[href^="https://lin.ee"], a[href^="https://sites.google.com"], a[href^="https://youtube.com"], a[href^="https://www.tiktok.com"]').forEach(link => {
+        document.querySelectorAll('a[href^="http"], a[href^="https://lin.ee"], a[href^="https://sites.google.com"], a[href^="https://youtube.com"], a[href^="https://www.tiktok.com"], a[href^="https://mehyc.github.io"]').forEach(link => {
             if (!link.target) link.target = '_blank';
             let rel = link.rel || '';
             if (!rel.includes('noopener')) link.rel = rel + ' noopener noreferrer';
         });
         const btns = document.querySelectorAll('.link-btn');
         if (btns[0]) btns[0].addEventListener('click', () => showToast('📨 匿名提問箱 · 期待你的訊息'));
-        if (btns[1]) btns[1].addEventListener('click', () => showToast('💚 加入官方LINE · 即時聯繫'));
-        if (btns[2]) btns[2].addEventListener('click', () => showToast('👤 個人檔案 · 了解更多關於我'));
-        if (btns[3]) btns[3].addEventListener('click', () => showToast('🎬 前往 YouTube 頻道 · 觀看更多影片'));
-        if (btns[4]) btns[4].addEventListener('click', () => showToast('🎵 追蹤抖音 TikTok · 精彩短影音'));
+        if (btns[1]) btns[1].addEventListener('click', () => showToast('📅 預約系統 · 立即預約'));
+        if (btns[2]) btns[2].addEventListener('click', () => showToast('💚 加入官方LINE · 即時聯繫'));
+        if (btns[3]) btns[3].addEventListener('click', () => showToast('👤 個人檔案 · 了解更多關於我'));
+        if (btns[4]) btns[4].addEventListener('click', () => showToast('🎬 前往 YouTube 頻道 · 觀看更多影片'));
+        if (btns[5]) btns[5].addEventListener('click', () => showToast('🎵 追蹤抖音 TikTok · 精彩短影音'));
     }
 
-    console.log('✅ Chan Hyc 秘密基地已載入（個人資料已新增感情欄位）');
+    console.log('✅ Chan Hyc 秘密基地已載入（已新增預約系統按鈕）');
 </script>
 </body>
 </html>
