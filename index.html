@@ -6,12 +6,10 @@
     <title>Chan Hyc · 秘密基地</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             background: radial-gradient(circle at 10% 20%, #0b0d17, #03030a);
             font-family: 'Inter', system-ui, sans-serif;
@@ -19,48 +17,27 @@
             padding-bottom: 115px;
             overflow-x: hidden;
         }
-
-        /* ========= 欢迎弹窗（文字上下晃動 + 翻轉） ========= */
         .welcome-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.92);
-            backdrop-filter: blur(12px);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.92); backdrop-filter: blur(12px);
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
             transition: opacity 0.8s ease, visibility 0.8s ease;
-            opacity: 1;
-            visibility: visible;
+            opacity: 1; visibility: visible;
         }
-        .welcome-overlay.hide {
-            opacity: 0;
-            visibility: hidden;
+        .welcome-overlay.auto-hide {
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
         }
         .welcome-card {
-            background: rgba(18, 22, 35, 0.8);
-            backdrop-filter: blur(20px);
-            border-radius: 2.5rem;
-            padding: 2.5rem 2rem;
-            max-width: 420px;
-            width: 90%;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(18, 22, 35, 0.8); backdrop-filter: blur(20px);
+            border-radius: 2.5rem; padding: 2.5rem 2rem; max-width: 420px; width: 90%;
+            text-align: center; border: 1px solid rgba(255, 255, 255, 0.15);
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
         }
         .welcome-text {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 0.8rem;
-            line-height: 1.5;
-            color: #fff;
-            display: inline-block;
-            transform-style: preserve-3d;
-            perspective: 600px;
+            font-size: 1.8rem; font-weight: 700; margin-bottom: 0.8rem;
+            line-height: 1.5; color: #fff; display: inline-block;
+            transform-style: preserve-3d; perspective: 600px;
             animation: flipBounce 1.0s ease-in-out infinite;
         }
         @keyframes flipBounce {
@@ -75,688 +52,280 @@
         }
         .welcome-text .highlight {
             background: linear-gradient(115deg, #FFF, #cdc7ff);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
+            background-clip: text; -webkit-background-clip: text; color: transparent;
         }
         .welcome-sub {
-            font-size: 0.95rem;
-            color: #cdd0f0;
-            opacity: 0.85;
-            letter-spacing: 1px;
-            display: block;
-            margin-top: 10px;
+            font-size: 0.95rem; color: #cdd0f0; opacity: 0.85;
+            letter-spacing: 1px; display: block; margin-top: 10px;
         }
-
-        .welcome-overlay.auto-hide {
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.8s ease, visibility 0.8s ease;
-        }
-
-        .main-wrapper {
-            opacity: 0;
-            transition: opacity 0.8s ease;
-        }
-        .main-wrapper.visible {
-            opacity: 1;
-        }
-
-        /* ========= 跑马灯 ========= */
+        .main-wrapper { opacity: 0; transition: opacity 0.8s ease; }
+        .main-wrapper.visible { opacity: 1; }
         .marquee-wrapper {
-            position: sticky;
-            top: 0;
-            width: 100%;
-            background: rgba(10, 12, 26, 0.85);
-            backdrop-filter: blur(12px);
+            position: sticky; top: 0; width: 100%;
+            background: rgba(10, 12, 26, 0.85); backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            z-index: 100;
-            padding: 0.75rem 0;
-            overflow-x: hidden;
+            z-index: 100; padding: 0.75rem 0; overflow-x: hidden;
         }
         .marquee-track {
-            display: flex;
-            white-space: nowrap;
-            animation: marqueeScroll 30s linear infinite;
-            width: fit-content;
+            display: flex; white-space: nowrap;
+            animation: marqueeScroll 30s linear infinite; width: fit-content;
         }
         .marquee-track span {
-            display: inline-block;
-            padding: 0 1rem;
-            font-size: 1rem;
-            font-weight: 500;
-            color: #f0eaff;
+            display: inline-block; padding: 0 1rem;
+            font-size: 1rem; font-weight: 500; color: #f0eaff;
         }
         @keyframes marqueeScroll {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
         }
-        .main-content {
-            display: flex;
-            justify-content: center;
-            padding: 1.5rem 1.5rem 1.5rem 1.5rem;
-        }
-        .container {
-            max-width: 560px;
-            width: 100%;
-            animation: fadeInUp 0.6s ease-out;
-        }
+        .main-content { display: flex; justify-content: center; padding: 1.5rem; }
+        .container { max-width: 560px; width: 100%; animation: fadeInUp 0.6s ease-out; }
         .profile-card {
-            background: rgba(18, 22, 35, 0.65);
-            backdrop-filter: blur(12px);
-            border-radius: 2.5rem;
-            padding: 1.8rem;
+            background: rgba(18, 22, 35, 0.65); backdrop-filter: blur(12px);
+            border-radius: 2.5rem; padding: 1.8rem;
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
         .name {
-            font-size: 2rem;
-            font-weight: 700;
-            text-align: center;
+            font-size: 2rem; font-weight: 700; text-align: center;
             background: linear-gradient(115deg, #FFF, #cdc7ff);
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 0.8rem;
+            background-clip: text; color: transparent; margin-bottom: 0.8rem;
         }
         .time-display {
-            text-align: center;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(4px);
-            padding: 0.6rem 1rem;
-            border-radius: 60px;
-            margin-bottom: 1.2rem;
-            font-size: 0.9rem;
-            font-weight: 500;
-            font-family: monospace;
-            letter-spacing: 1px;
-            color: #c6e0ff;
+            text-align: center; background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(4px); padding: 0.6rem 1rem;
+            border-radius: 60px; margin-bottom: 1.2rem;
+            font-size: 0.9rem; font-weight: 500; font-family: monospace;
+            letter-spacing: 1px; color: #c6e0ff;
             border: 1px solid rgba(255, 255, 255, 0.08);
-            width: fit-content;
-            margin-left: auto;
-            margin-right: auto;
+            width: fit-content; margin-left: auto; margin-right: auto;
         }
-
-        /* ===== 個人資料按鈕 ===== */
-        .info-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            background: rgba(25, 30, 45, 0.7);
+        .info-btn, .cancer-btn, .motto-btn {
+            display: flex; align-items: center; justify-content: center;
+            gap: 12px; background: rgba(25, 30, 45, 0.7);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 0.9rem;
-            border-radius: 60px;
-            font-weight: 700;
-            font-size: 1.2rem;
-            text-decoration: none;
-            color: #F1F3FF;
-            transition: 0.25s;
-            cursor: pointer;
-            width: 100%;
-            margin-bottom: 1rem;
+            padding: 0.9rem; border-radius: 60px;
+            font-weight: 700; font-size: 1.2rem;
+            text-decoration: none; color: #F1F3FF;
+            transition: 0.25s; cursor: pointer; width: 100%;
             font-family: inherit;
         }
-        .info-btn:hover {
+        .info-btn { margin-bottom: 1rem; }
+        .cancer-btn { margin-bottom: 1rem; }
+        .motto-btn { margin-bottom: 1.8rem; }
+        .info-btn:hover, .cancer-btn:hover, .motto-btn:hover {
             background: rgba(85, 70, 180, 0.7);
             transform: scale(1.02);
         }
-        .info-btn i {
-            font-size: 1.3rem;
-            color: #b7adff;
+        .info-btn i, .cancer-btn i, .motto-btn i {
+            font-size: 1.3rem; color: #b7adff;
         }
-
-        /* ===== 個人資料彈窗 ===== */
-        .info-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(8px);
-            z-index: 2000;
-            display: none;
-            align-items: center;
-            justify-content: center;
+        .info-overlay, .cancer-overlay, .motto-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px);
+            z-index: 2000; display: none; align-items: center; justify-content: center;
             padding: 1.5rem;
         }
-        .info-overlay.active {
-            display: flex;
-        }
-        .info-card {
-            background: rgba(18, 22, 35, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 2.5rem;
-            padding: 2rem 2rem 2.2rem;
-            max-width: 380px;
-            width: 100%;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+        .info-overlay.active, .cancer-overlay.active, .motto-overlay.active { display: flex; }
+        .info-card, .motto-card {
+            background: rgba(18, 22, 35, 0.95); backdrop-filter: blur(20px);
+            border-radius: 2.5rem; padding: 2rem 2rem 2.2rem;
+            width: 100%; border: 1px solid rgba(255, 255, 255, 0.15);
             box-shadow: 0 25px 40px rgba(0, 0, 0, 0.6);
-            animation: fadeInScale 0.3s ease-out;
-            position: relative;
+            animation: fadeInScale 0.3s ease-out; position: relative;
         }
-        .info-card .close-btn {
-            position: absolute;
-            top: 12px;
-            right: 16px;
-            background: none;
-            border: none;
-            color: #8e93b0;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-        .info-card .close-btn:hover {
-            color: #fff;
-        }
-        .info-card .info-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #cdc7ff;
-            margin-bottom: 1.2rem;
-            text-align: center;
-            letter-spacing: 1px;
-        }
-        .info-card .info-content {
-            font-size: 1rem;
-            line-height: 2;
-            color: #e0e2f5;
-            text-align: left;
-            font-weight: 400;
-            padding: 0 0.5rem;
-        }
-        .info-card .info-content .label {
-            color: #9f9fcf;
-            font-weight: 300;
-        }
-        .info-card .info-content .value {
-            color: #f0f0ff;
-            font-weight: 500;
-        }
-
-        /* ===== 巨蟹座按鈕 ===== */
-        .cancer-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            background: rgba(25, 30, 45, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 0.9rem;
-            border-radius: 60px;
-            font-weight: 700;
-            font-size: 1.2rem;
-            text-decoration: none;
-            color: #F1F3FF;
-            transition: 0.25s;
-            cursor: pointer;
-            width: 100%;
-            margin-bottom: 1rem;
-            font-family: inherit;
-        }
-        .cancer-btn:hover {
-            background: rgba(85, 70, 180, 0.7);
-            transform: scale(1.02);
-        }
-        .cancer-btn i {
-            font-size: 1.3rem;
-            color: #b7adff;
-        }
-
-        /* ===== 巨蟹座彈窗 ===== */
-        .cancer-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(8px);
-            z-index: 2000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 1.5rem;
-        }
-        .cancer-overlay.active {
-            display: flex;
-        }
+        .info-card { max-width: 380px; }
+        .motto-card { max-width: 420px; }
         .cancer-card {
-            background: rgba(18, 22, 35, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 2.5rem;
-            padding: 2rem 2rem 2.2rem;
-            max-width: 480px;
-            width: 100%;
-            max-height: 85vh;
-            overflow-y: auto;
+            background: rgba(18, 22, 35, 0.95); backdrop-filter: blur(20px);
+            border-radius: 2.5rem; padding: 2rem 2rem 2.2rem;
+            max-width: 480px; width: 100%; max-height: 85vh; overflow-y: auto;
             border: 1px solid rgba(255, 255, 255, 0.15);
             box-shadow: 0 25px 40px rgba(0, 0, 0, 0.6);
-            animation: fadeInScale 0.3s ease-out;
-            position: relative;
+            animation: fadeInScale 0.3s ease-out; position: relative;
         }
-        .cancer-card::-webkit-scrollbar {
-            width: 4px;
+        .cancer-card::-webkit-scrollbar { width: 4px; }
+        .cancer-card::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
+        .cancer-card::-webkit-scrollbar-thumb { background: rgba(170, 126, 255, 0.4); border-radius: 10px; }
+        .close-btn {
+            position: absolute; top: 12px; right: 16px;
+            background: none; border: none; color: #8e93b0;
+            font-size: 1.5rem; cursor: pointer; transition: color 0.2s;
         }
-        .cancer-card::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-        }
-        .cancer-card::-webkit-scrollbar-thumb {
-            background: rgba(170, 126, 255, 0.4);
-            border-radius: 10px;
-        }
+        .close-btn:hover { color: #fff; }
         .cancer-card .close-btn {
-            position: sticky;
-            top: 0;
-            float: right;
-            background: none;
-            border: none;
-            color: #8e93b0;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: color 0.2s;
-            z-index: 10;
+            position: sticky; top: 0; float: right; z-index: 10;
         }
-        .cancer-card .close-btn:hover {
-            color: #fff;
+        .info-title, .motto-title, .cancer-title {
+            font-size: 1.2rem; font-weight: 600; color: #cdc7ff;
+            margin-bottom: 1.2rem; text-align: center; letter-spacing: 1px;
         }
-        .cancer-card .cancer-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #cdc7ff;
-            margin-bottom: 1rem;
-            text-align: center;
-            letter-spacing: 1px;
-            clear: both;
+        .cancer-title { margin-bottom: 1rem; clear: both; }
+        .info-content {
+            font-size: 1rem; line-height: 2; color: #e0e2f5;
+            text-align: left; font-weight: 400; padding: 0 0.5rem;
         }
-        .cancer-card .cancer-content {
-            font-size: 0.95rem;
-            line-height: 1.9;
-            color: #e0e2f5;
-            white-space: pre-line;
-            text-align: left;
-            font-weight: 400;
+        .info-content .label { color: #9f9fcf; font-weight: 300; }
+        .info-content .value { color: #f0f0ff; font-weight: 500; }
+        .motto-content {
+            font-size: 1rem; line-height: 1.8; color: #e0e2f5;
+            white-space: pre-line; text-align: center; font-weight: 400;
+        }
+        .cancer-content {
+            font-size: 0.95rem; line-height: 1.9; color: #e0e2f5;
+            white-space: pre-line; text-align: left; font-weight: 400;
             padding: 0 0.5rem;
         }
-
-        /* ===== 座右銘按鈕 ===== */
-        .motto-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            background: rgba(25, 30, 45, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 0.9rem;
-            border-radius: 60px;
-            font-weight: 700;
-            font-size: 1.2rem;
-            text-decoration: none;
-            color: #F1F3FF;
-            transition: 0.25s;
-            cursor: pointer;
-            width: 100%;
-            margin-bottom: 1.8rem;
-            font-family: inherit;
-        }
-        .motto-btn:hover {
-            background: rgba(85, 70, 180, 0.7);
-            transform: scale(1.02);
-        }
-        .motto-btn i {
-            font-size: 1.3rem;
-            color: #b7adff;
-        }
-
-        /* ===== 座右銘彈窗 ===== */
-        .motto-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(8px);
-            z-index: 2000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 1.5rem;
-        }
-        .motto-overlay.active {
-            display: flex;
-        }
-        .motto-card {
-            background: rgba(18, 22, 35, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 2.5rem;
-            padding: 2rem 2rem 2.2rem;
-            max-width: 420px;
-            width: 100%;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.6);
-            animation: fadeInScale 0.3s ease-out;
-            position: relative;
-        }
-        .motto-card .close-btn {
-            position: absolute;
-            top: 12px;
-            right: 16px;
-            background: none;
-            border: none;
-            color: #8e93b0;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-        .motto-card .close-btn:hover {
-            color: #fff;
-        }
-        .motto-card .motto-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #cdc7ff;
-            margin-bottom: 1.2rem;
-            text-align: center;
-            letter-spacing: 1px;
-        }
-        .motto-card .motto-content {
-            font-size: 1rem;
-            line-height: 1.8;
-            color: #e0e2f5;
-            white-space: pre-line;
-            text-align: center;
-            font-weight: 400;
-        }
-
-        .links-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
+        .links-grid { display: flex; flex-direction: column; gap: 1rem; }
         .link-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            background: rgba(25, 30, 45, 0.7);
+            display: flex; align-items: center; justify-content: center;
+            gap: 12px; background: rgba(25, 30, 45, 0.7);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 0.9rem;
-            border-radius: 60px;
-            font-weight: 700;
-            text-decoration: none;
-            color: #F1F3FF;
-            transition: 0.25s;
+            padding: 0.9rem; border-radius: 60px;
+            font-weight: 700; text-decoration: none;
+            color: #F1F3FF; transition: 0.25s;
         }
         .link-btn:hover {
             background: rgba(85, 70, 180, 0.7);
             transform: scale(1.02);
         }
-
-        /* ========= 音樂播放器（升級版） ========= */
         .music-player {
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(8px);
-            border-radius: 1.8rem;
-            padding: 1rem 1.2rem 1.2rem;
-            margin-top: 1.2rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(8px);
+            border-radius: 1.8rem; padding: 1rem 1.2rem 1.2rem;
+            margin-top: 1.2rem; border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .music-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #cdc7ff;
-            text-align: center;
-            margin-bottom: 0.8rem;
-            letter-spacing: 0.5px;
+            font-size: 0.9rem; font-weight: 600; color: #cdc7ff;
+            text-align: center; margin-bottom: 0.8rem; letter-spacing: 0.5px;
         }
-
-        /* 進度條 */
         .progress-section {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 0.8rem;
+            display: flex; align-items: center; gap: 8px; margin-bottom: 0.8rem;
         }
         .progress-section .time-label {
-            font-size: 0.65rem;
-            color: #8e93b0;
-            font-family: monospace;
-            min-width: 32px;
-            text-align: center;
+            font-size: 0.65rem; color: #8e93b0;
+            font-family: monospace; min-width: 32px; text-align: center;
         }
         .progress-bar {
-            flex: 1;
-            -webkit-appearance: none;
-            appearance: none;
-            height: 5px;
-            border-radius: 5px;
+            flex: 1; -webkit-appearance: none; appearance: none;
+            height: 5px; border-radius: 5px;
             background: rgba(255, 255, 255, 0.15);
-            outline: none;
-            cursor: pointer;
+            outline: none; cursor: pointer;
         }
         .progress-bar::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
+            -webkit-appearance: none; appearance: none;
+            width: 14px; height: 14px; border-radius: 50%;
             background: linear-gradient(135deg, #6f5cf1, #aa4eff);
-            cursor: pointer;
-            box-shadow: 0 0 8px rgba(106, 90, 205, 0.6);
+            cursor: pointer; box-shadow: 0 0 8px rgba(106, 90, 205, 0.6);
         }
         .progress-bar::-moz-range-thumb {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
+            width: 14px; height: 14px; border-radius: 50%;
             background: linear-gradient(135deg, #6f5cf1, #aa4eff);
-            cursor: pointer;
-            border: none;
+            cursor: pointer; border: none;
             box-shadow: 0 0 8px rgba(106, 90, 205, 0.6);
         }
-
-        /* 控制按鈕 + 直立音量 */
         .music-main-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1.2rem;
-            margin-bottom: 0.5rem;
+            display: flex; align-items: center; justify-content: center;
+            gap: 1.2rem; margin-bottom: 0.5rem;
         }
         .music-controls {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             gap: 0.8rem;
         }
         .music-controls button {
             background: rgba(25, 30, 45, 0.9);
             border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #F1F3FF;
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.25s;
+            color: #F1F3FF; width: 42px; height: 42px;
+            border-radius: 50%; display: flex;
+            align-items: center; justify-content: center;
+            font-size: 1rem; cursor: pointer; transition: 0.25s;
         }
         .music-controls button:hover {
             background: rgba(85, 70, 180, 0.8);
             transform: scale(1.05);
         }
-        .music-controls button:active {
-            transform: scale(0.95);
-        }
         .music-controls .play-btn {
-            width: 52px;
-            height: 52px;
-            font-size: 1.3rem;
+            width: 52px; height: 52px; font-size: 1.3rem;
             background: linear-gradient(135deg, #6f5cf1, #aa4eff);
-            border: none;
-            box-shadow: 0 4px 15px rgba(106, 90, 205, 0.4);
+            border: none; box-shadow: 0 4px 15px rgba(106, 90, 205, 0.4);
         }
-        .music-controls .play-btn:hover {
-            background: linear-gradient(135deg, #7f6cf1, #ba5eff);
-            box-shadow: 0 6px 20px rgba(106, 90, 205, 0.6);
-        }
-
-        /* 直立式音量 */
         .volume-vertical-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
+            display: flex; flex-direction: column;
+            align-items: center; gap: 4px;
         }
         .volume-vertical-wrapper .vol-icon {
-            color: #b7adff;
-            font-size: 0.85rem;
+            color: #b7adff; font-size: 0.85rem;
         }
         .volume-vertical {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 5px;
-            height: 70px;
-            border-radius: 5px;
+            -webkit-appearance: none; appearance: none;
+            width: 5px; height: 70px; border-radius: 5px;
             background: rgba(255, 255, 255, 0.15);
-            outline: none;
-            cursor: pointer;
-            writing-mode: vertical-lr;
-            direction: rtl;
+            outline: none; cursor: pointer;
+            writing-mode: vertical-lr; direction: rtl;
         }
         .volume-vertical::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
+            -webkit-appearance: none; appearance: none;
+            width: 14px; height: 14px; border-radius: 50%;
             background: linear-gradient(135deg, #6f5cf1, #aa4eff);
-            cursor: pointer;
-            box-shadow: 0 0 8px rgba(106, 90, 205, 0.6);
+            cursor: pointer; box-shadow: 0 0 8px rgba(106, 90, 205, 0.6);
         }
         .volume-vertical::-moz-range-thumb {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
+            width: 14px; height: 14px; border-radius: 50%;
             background: linear-gradient(135deg, #6f5cf1, #aa4eff);
-            cursor: pointer;
-            border: none;
+            cursor: pointer; border: none;
             box-shadow: 0 0 8px rgba(106, 90, 205, 0.6);
         }
         .volume-value-small {
-            font-size: 0.6rem;
-            color: #9f9fcf;
-            font-family: monospace;
+            font-size: 0.6rem; color: #9f9fcf; font-family: monospace;
         }
-
         .music-info {
-            text-align: center;
-            font-size: 0.7rem;
-            color: #8e93b0;
-            margin-top: 0.5rem;
+            text-align: center; font-size: 0.7rem;
+            color: #8e93b0; margin-top: 0.5rem;
         }
-
-        /* ========= 倒數計時器樣式 ========= */
         .countdown-container {
-            background: rgba(0, 0, 0, 0.25);
-            backdrop-filter: blur(4px);
-            border-radius: 60px;
-            padding: 0.8rem 1.2rem;
-            margin-bottom: 0.2rem;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            text-align: center;
-            cursor: pointer;
-            transition: background 0.2s;
+            background: rgba(0, 0, 0, 0.25); backdrop-filter: blur(4px);
+            border-radius: 60px; padding: 0.8rem 1.2rem;
+            margin-bottom: 0.2rem; border: 1px solid rgba(255, 255, 255, 0.06);
+            text-align: center; cursor: pointer; transition: background 0.2s;
             user-select: none;
         }
-        .countdown-container:hover {
-            background: rgba(85, 70, 180, 0.2);
-        }
+        .countdown-container:hover { background: rgba(85, 70, 180, 0.2); }
         .countdown-label {
-            font-size: 0.6rem;
-            color: #8e93b0;
-            letter-spacing: 0.5px;
-            margin-bottom: 2px;
+            font-size: 0.6rem; color: #8e93b0;
+            letter-spacing: 0.5px; margin-bottom: 2px;
         }
         .countdown-main {
-            font-family: 'Inter', monospace;
-            font-weight: 700;
-            font-size: 1.8rem;
-            letter-spacing: 1px;
-            color: #e8eaff;
-            text-shadow: 0 0 10px rgba(106, 90, 205, 0.15);
-            line-height: 1.2;
+            font-family: 'Inter', monospace; font-weight: 700;
+            font-size: 1.8rem; letter-spacing: 1px; color: #e8eaff;
+            text-shadow: 0 0 10px rgba(106, 90, 205, 0.15); line-height: 1.2;
         }
         .countdown-main .unit {
-            font-size: 1rem;
-            color: #9f9fcf;
-            font-weight: 500;
-            margin-left: 2px;
+            font-size: 1rem; color: #9f9fcf;
+            font-weight: 500; margin-left: 2px;
         }
-        .countdown-main .sep {
-            color: #6a6f8a;
-            margin: 0 4px;
-            font-weight: 300;
-        }
+        .countdown-main .sep { color: #6a6f8a; margin: 0 4px; font-weight: 300; }
         .countdown-sub {
-            font-family: 'Inter', monospace;
-            font-weight: 500;
-            font-size: 0.95rem;
-            letter-spacing: 1px;
-            color: #b4b7d6;
-            margin-top: 2px;
+            font-family: 'Inter', monospace; font-weight: 500;
+            font-size: 0.95rem; letter-spacing: 1px; color: #b4b7d6; margin-top: 2px;
         }
         .countdown-hint {
-            font-size: 0.55rem;
-            color: #6a6f8a;
-            margin-top: 4px;
+            font-size: 0.55rem; color: #6a6f8a; margin-top: 4px;
         }
-        .countdown-hint i {
-            font-size: 0.5rem;
-            margin-right: 3px;
-        }
-
+        .countdown-hint i { font-size: 0.5rem; margin-right: 3px; }
         .fixed-footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(10, 12, 26, 0.85);
-            backdrop-filter: blur(12px);
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: rgba(10, 12, 26, 0.85); backdrop-filter: blur(12px);
             border-top: 1px solid rgba(255, 255, 255, 0.12);
-            padding: 0.8rem;
-            text-align: center;
-            font-size: 0.75rem;
-            color: #b4b7d6;
-            z-index: 99;
+            padding: 0.8rem; text-align: center;
+            font-size: 0.75rem; color: #b4b7d6; z-index: 99;
         }
-        .footer-stats {
-            margin-top: 4px;
-            font-size: 0.7rem;
-            color: #9f9fcf;
-        }
+        .footer-stats { margin-top: 4px; font-size: 0.7rem; color: #9f9fcf; }
         .toast-msg {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(30, 35, 55, 0.95);
-            backdrop-filter: blur(16px);
-            padding: 12px 24px;
-            border-radius: 60px;
-            font-size: 0.85rem;
-            white-space: nowrap;
-            opacity: 0;
-            transition: 0.2s;
-            pointer-events: none;
-            z-index: 1000;
+            position: fixed; bottom: 100px; left: 50%;
+            transform: translateX(-50%); background: rgba(30, 35, 55, 0.95);
+            backdrop-filter: blur(16px); padding: 12px 24px;
+            border-radius: 60px; font-size: 0.85rem; white-space: nowrap;
+            opacity: 0; transition: 0.2s; pointer-events: none; z-index: 1000;
         }
-        .toast-msg.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
+        .toast-msg.show { opacity: 1; transform: translateX(-50%) translateY(0); }
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(18px); }
             to { opacity: 1; transform: translateY(0); }
@@ -771,12 +340,6 @@
             .time-display { font-size: 0.75rem; padding: 0.4rem 0.8rem; }
             .countdown-main { font-size: 1.4rem; }
             .countdown-sub { font-size: 0.8rem; }
-            .motto-card { padding: 1.5rem; }
-            .motto-card .motto-content { font-size: 0.9rem; }
-            .info-card { padding: 1.5rem; }
-            .info-card .info-content { font-size: 0.9rem; }
-            .cancer-card { padding: 1.5rem; max-height: 80vh; }
-            .cancer-card .cancer-content { font-size: 0.88rem; }
             .music-controls button { width: 36px; height: 36px; font-size: 0.85rem; }
             .music-controls .play-btn { width: 46px; height: 46px; font-size: 1.1rem; }
             .volume-vertical { height: 55px; }
@@ -785,7 +348,6 @@
 </head>
 <body>
 
-<!-- 欢迎弹窗 -->
 <div id="welcomeOverlay" class="welcome-overlay">
     <div class="welcome-card">
         <div class="welcome-text">
@@ -797,7 +359,6 @@
     </div>
 </div>
 
-<!-- 主内容 -->
 <div id="mainWrapper" class="main-wrapper">
     <div class="marquee-wrapper">
         <div class="marquee-track">
@@ -812,33 +373,27 @@
                 <div class="name">chan hyc</div>
                 <div class="time-display" id="liveDateTime">-- 年 -- 月 -- 日 -- : -- : -- 星期-</div>
 
-                <!-- 個人資料按鈕 -->
                 <button class="info-btn" id="infoBtn">
                     <i class="fas fa-id-card"></i> 個人資料
                 </button>
 
-                <!-- 巨蟹座按鈕 -->
                 <button class="cancer-btn" id="cancerBtn">
                     <i class="fas fa-crab"></i> 巨蟹座
                 </button>
 
-                <!-- 座右銘按鈕 -->
                 <button class="motto-btn" id="mottoBtn">
                     <i class="fas fa-quote-left"></i> 座右銘
                 </button>
 
                 <div class="links-grid">
-                    <!-- 匿名按钮 -->
                     <a href="https://ngl.link/www278278a?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAdGRzdgR39oFleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA81NjcwNjczNDMzNTI0MjcAAad1QHgTFR0yQpY9qU7hXsEEkMnMy00dPx05wETCkD6MYZziI1NdfSYkonQisw_aem_YRlYAVt9TJrgoe9I48i-OQ" target="_blank" rel="noopener noreferrer" class="link-btn">
                         <i class="fas fa-user-secret"></i><span>匿名</span>
                     </a>
 
-                    <!-- 預約系統按鈕 -->
                     <a href="https://mehyc.github.io/reserve/" target="_blank" rel="noopener noreferrer" class="link-btn">
                         <i class="fas fa-calendar-check"></i><span>預約系統</span>
                     </a>
 
-                    <!-- 倒數計時器 -->
                     <div class="countdown-container" id="countdownContainer" title="點擊切換顯示格式">
                         <div class="countdown-label">🎂 距離生日</div>
                         <div class="countdown-main" id="countdownMain">-- <span class="unit">天</span></div>
@@ -846,7 +401,6 @@
                         <div class="countdown-hint"><i class="fas fa-mouse-pointer"></i> 點擊切換格式</div>
                     </div>
 
-                    <!-- 官方LINE按鈕 -->
                     <a href="https://lin.ee/V52LQIp" target="_blank" rel="noopener noreferrer" class="link-btn">
                         <i class="fab fa-line"></i><span>官方LINE · @377mewyu</span>
                     </a>
@@ -861,18 +415,15 @@
                     </a>
                 </div>
 
-                <!-- ===== 音樂播放器（升級版） ===== -->
                 <div class="music-player">
                     <div class="music-title">🎵 音樂播放器</div>
 
-                    <!-- 進度條 -->
                     <div class="progress-section">
                         <span class="time-label" id="currentTimeLabel">0:00</span>
                         <input type="range" class="progress-bar" id="progressBar" min="0" max="100" value="0" step="0.1">
                         <span class="time-label" id="durationLabel">0:00</span>
                     </div>
 
-                    <!-- 控制列 + 直立音量 -->
                     <div class="music-main-row">
                         <div class="music-controls">
                             <button id="prevBtn" title="上一首"><i class="fas fa-backward"></i></button>
@@ -880,7 +431,6 @@
                             <button id="nextBtn" title="下一首"><i class="fas fa-forward"></i></button>
                         </div>
 
-                        <!-- 直立式音量 -->
                         <div class="volume-vertical-wrapper">
                             <i class="fas fa-volume-up vol-icon" id="volIconTop"></i>
                             <input type="range" class="volume-vertical" id="volumeVertical" min="0" max="100" value="70">
@@ -888,7 +438,7 @@
                         </div>
                     </div>
 
-                    <div class="music-info" id="musicInfo">第 1 / 60 首 · 載入中...</div>
+                    <div class="music-info" id="musicInfo">載入中...</div>
                 </div>
 
             </div>
@@ -903,7 +453,6 @@
     <div id="toastMsg" class="toast-msg">✨ 操作成功</div>
 </div>
 
-<!-- 個人資料彈窗 -->
 <div class="info-overlay" id="infoOverlay">
     <div class="info-card">
         <button class="close-btn" id="infoCloseBtn">&times;</button>
@@ -921,7 +470,6 @@
     </div>
 </div>
 
-<!-- 巨蟹座彈窗 -->
 <div class="cancer-overlay" id="cancerOverlay">
     <div class="cancer-card">
         <button class="close-btn" id="cancerCloseBtn">&times;</button>
@@ -973,7 +521,6 @@
     </div>
 </div>
 
-<!-- 座右銘彈窗 -->
 <div class="motto-overlay" id="mottoOverlay">
     <div class="motto-card">
         <button class="close-btn" id="mottoCloseBtn">&times;</button>
@@ -991,11 +538,9 @@
     </div>
 </div>
 
-<!-- 隱藏的音樂播放元素 -->
 <audio id="audioPlayer" preload="auto"></audio>
 
 <script>
-    // ========= 歡迎彈窗自動淡出 =========
     const welcomeOverlay = document.getElementById('welcomeOverlay');
     const mainWrapper = document.getElementById('mainWrapper');
 
@@ -1014,73 +559,11 @@
     document.body.style.overflow = 'hidden';
 
     // ============================================================
-    // 🎵 音樂播放系統（60 首，直接放在 GitHub 根目錄）
+    // 🎵 音樂播放系統（自動偵測存在的 MP3）
     // ============================================================
-    // 📌 MP3 檔案與 index.html 放在同一層，路徑直接寫檔名即可
+    // 📌 程式會自動檢查 01.mp3 ~ 60.mp3 哪些存在
+    // 📌 不存在的會自動跳過，不會報錯
     // ============================================================
-
-    const playlist = [
-        { title: "歌曲 01", src: "01.mp3" },
-        { title: "歌曲 02", src: "02.mp3" },
-        { title: "歌曲 03", src: "03.mp3" },
-        { title: "歌曲 04", src: "04.mp3" },
-        { title: "歌曲 05", src: "05.mp3" },
-        { title: "歌曲 06", src: "06.mp3" },
-        { title: "歌曲 07", src: "07.mp3" },
-        { title: "歌曲 08", src: "08.mp3" },
-        { title: "歌曲 09", src: "09.mp3" },
-        { title: "歌曲 10", src: "10.mp3" },
-        { title: "歌曲 11", src: "11.mp3" },
-        { title: "歌曲 12", src: "12.mp3" },
-        { title: "歌曲 13", src: "13.mp3" },
-        { title: "歌曲 14", src: "14.mp3" },
-        { title: "歌曲 15", src: "15.mp3" },
-        { title: "歌曲 16", src: "16.mp3" },
-        { title: "歌曲 17", src: "17.mp3" },
-        { title: "歌曲 18", src: "18.mp3" },
-        { title: "歌曲 19", src: "19.mp3" },
-        { title: "歌曲 20", src: "20.mp3" },
-        { title: "歌曲 21", src: "21.mp3" },
-        { title: "歌曲 22", src: "22.mp3" },
-        { title: "歌曲 23", src: "23.mp3" },
-        { title: "歌曲 24", src: "24.mp3" },
-        { title: "歌曲 25", src: "25.mp3" },
-        { title: "歌曲 26", src: "26.mp3" },
-        { title: "歌曲 27", src: "27.mp3" },
-        { title: "歌曲 28", src: "28.mp3" },
-        { title: "歌曲 29", src: "29.mp3" },
-        { title: "歌曲 30", src: "30.mp3" },
-        { title: "歌曲 31", src: "31.mp3" },
-        { title: "歌曲 32", src: "32.mp3" },
-        { title: "歌曲 33", src: "33.mp3" },
-        { title: "歌曲 34", src: "34.mp3" },
-        { title: "歌曲 35", src: "35.mp3" },
-        { title: "歌曲 36", src: "36.mp3" },
-        { title: "歌曲 37", src: "37.mp3" },
-        { title: "歌曲 38", src: "38.mp3" },
-        { title: "歌曲 39", src: "39.mp3" },
-        { title: "歌曲 40", src: "40.mp3" },
-        { title: "歌曲 41", src: "41.mp3" },
-        { title: "歌曲 42", src: "42.mp3" },
-        { title: "歌曲 43", src: "43.mp3" },
-        { title: "歌曲 44", src: "44.mp3" },
-        { title: "歌曲 45", src: "45.mp3" },
-        { title: "歌曲 46", src: "46.mp3" },
-        { title: "歌曲 47", src: "47.mp3" },
-        { title: "歌曲 48", src: "48.mp3" },
-        { title: "歌曲 49", src: "49.mp3" },
-        { title: "歌曲 50", src: "50.mp3" },
-        { title: "歌曲 51", src: "51.mp3" },
-        { title: "歌曲 52", src: "52.mp3" },
-        { title: "歌曲 53", src: "53.mp3" },
-        { title: "歌曲 54", src: "54.mp3" },
-        { title: "歌曲 55", src: "55.mp3" },
-        { title: "歌曲 56", src: "56.mp3" },
-        { title: "歌曲 57", src: "57.mp3" },
-        { title: "歌曲 58", src: "58.mp3" },
-        { title: "歌曲 59", src: "59.mp3" },
-        { title: "歌曲 60", src: "60.mp3" }
-    ];
 
     const audio = document.getElementById('audioPlayer');
     const playPauseBtn = document.getElementById('playPauseBtn');
@@ -1095,10 +578,12 @@
     const currentTimeLabel = document.getElementById('currentTimeLabel');
     const durationLabel = document.getElementById('durationLabel');
 
+    let playlist = [];   // 實際存在的歌曲
     let currentIndex = 0;
     let isPlaying = false;
     let isDraggingProgress = false;
 
+    // 格式化時間 mm:ss
     function formatTime(seconds) {
         if (isNaN(seconds) || seconds < 0) return '0:00';
         const m = Math.floor(seconds / 60);
@@ -1106,6 +591,53 @@
         return `${m}:${String(s).padStart(2, '0')}`;
     }
 
+    // 檢查單一檔案是否存在
+    function checkFileExists(url) {
+        return new Promise((resolve) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('HEAD', url, true);
+            xhr.onload = () => resolve(xhr.status === 200);
+            xhr.onerror = () => resolve(false);
+            xhr.send();
+        });
+    }
+
+    // 掃描 01.mp3 ~ 60.mp3，找出實際存在的檔案
+    async function scanMusicFiles() {
+        musicInfo.innerText = '🔍 掃描音樂檔案中...';
+        const found = [];
+        const checks = [];
+
+        for (let i = 1; i <= 60; i++) {
+            const num = String(i).padStart(2, '0');
+            const fileName = `${num}.mp3`;
+            checks.push(
+                checkFileExists(fileName).then(exists => {
+                    if (exists) {
+                        found.push({ title: `歌曲 ${num}`, src: fileName, index: i });
+                    }
+                })
+            );
+        }
+
+        await Promise.all(checks);
+        // 按檔名數字排序
+        found.sort((a, b) => a.index - b.index);
+        playlist = found;
+
+        if (playlist.length === 0) {
+            musicInfo.innerText = '⚠️ 找不到任何音樂檔案';
+            showToast('⚠️ 找不到任何 MP3 檔案');
+            return;
+        }
+
+        musicInfo.innerText = `共找到 ${playlist.length} 首音樂`;
+        loadTrack(0);
+        // 更新語音歡迎的歌曲數
+        updateWelcomeVoice();
+    }
+
+    // 載入歌曲
     function loadTrack(index) {
         if (index < 0 || index >= playlist.length) return;
         currentIndex = index;
@@ -1117,13 +649,24 @@
         durationLabel.innerText = '0:00';
     }
 
+    // 播放
     function playAudio() {
+        if (playlist.length === 0) {
+            showToast('⚠️ 尚無可播放的音樂');
+            return;
+        }
         audio.play().then(() => {
             isPlaying = true;
             playIcon.className = 'fas fa-pause';
         }).catch(err => {
             console.log('播放失敗:', err);
-            showToast('⚠️ 請手動點擊播放按鈕');
+            if (err.name === 'NotSupportedError') {
+                showToast('❌ 找不到音樂檔案，請確認已上傳 MP3');
+            } else if (err.name === 'NotAllowedError') {
+                showToast('⚠️ 請手動點擊播放按鈕');
+            } else {
+                showToast('❌ 播放失敗：' + err.name);
+            }
         });
     }
 
@@ -1139,12 +682,14 @@
     });
 
     prevBtn.addEventListener('click', () => {
+        if (playlist.length === 0) return;
         const newIndex = (currentIndex - 1 + playlist.length) % playlist.length;
         loadTrack(newIndex);
         if (isPlaying) playAudio();
     });
 
     nextBtn.addEventListener('click', () => {
+        if (playlist.length === 0) return;
         const newIndex = (currentIndex + 1) % playlist.length;
         loadTrack(newIndex);
         if (isPlaying) playAudio();
@@ -1180,6 +725,7 @@
     });
 
     audio.addEventListener('ended', () => {
+        if (playlist.length === 0) return;
         const newIndex = (currentIndex + 1) % playlist.length;
         loadTrack(newIndex);
         playAudio();
@@ -1202,14 +748,25 @@
     audio.volume = 0.7;
     volumeValueSmall.innerText = '70%';
 
-    loadTrack(0);
+    // ========= 語音歡迎（動態更新歌曲數） =========
+    let welcomeSpoken = false;
 
-    // ========= 語音歡迎 =========
+    function updateWelcomeVoice() {
+        // 掃描完成後，如果語音還沒播放過，就播放
+        if (!welcomeSpoken && playlist.length > 0) {
+            speakWelcome();
+        }
+    }
+
     function speakWelcome() {
         if (!('speechSynthesis' in window)) return;
+        if (welcomeSpoken) return;
+        welcomeSpoken = true;
+
         setTimeout(() => {
+            const count = playlist.length > 0 ? playlist.length : 0;
             const utterance = new SpeechSynthesisUtterance(
-                `歡迎使用 hyc 網頁音樂系統，音樂總共有 ${playlist.length} 首`
+                `歡迎使用 hyc 網頁音樂系統，音樂總共有 ${count} 首`
             );
             utterance.lang = 'zh-TW';
             utterance.rate = 0.9;
@@ -1225,6 +782,9 @@
     if ('speechSynthesis' in window) {
         window.speechSynthesis.getVoices();
     }
+
+    // 啟動掃描
+    scanMusicFiles();
 
     // ========= Firebase 瀏覽次數計數器 =========
     const firebaseConfig = {
@@ -1257,7 +817,7 @@
         }
     }
 
-    // ========= 個人資料彈窗 =========
+    // ========= 彈窗控制 =========
     const infoBtn = document.getElementById('infoBtn');
     const infoOverlay = document.getElementById('infoOverlay');
     const infoCloseBtn = document.getElementById('infoCloseBtn');
@@ -1277,7 +837,6 @@
         }
     });
 
-    // ========= 巨蟹座彈窗 =========
     const cancerBtn = document.getElementById('cancerBtn');
     const cancerOverlay = document.getElementById('cancerOverlay');
     const cancerCloseBtn = document.getElementById('cancerCloseBtn');
@@ -1297,7 +856,6 @@
         }
     });
 
-    // ========= 座右銘彈窗 =========
     const mottoBtn = document.getElementById('mottoBtn');
     const mottoOverlay = document.getElementById('mottoOverlay');
     const mottoCloseBtn = document.getElementById('mottoCloseBtn');
@@ -1445,7 +1003,7 @@
         toastEl.textContent = msg;
         toastEl.classList.add('show');
         if (toastTimer) clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2200);
+        toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2500);
     };
 
     function bindButtons() {
@@ -1463,7 +1021,7 @@
         if (btns[5]) btns[5].addEventListener('click', () => showToast('🎵 追蹤抖音 TikTok · 精彩短影音'));
     }
 
-    console.log('✅ Chan Hyc 秘密基地已載入（音樂播放器：60首、純檔名路徑、直立音量、進度條）');
+    console.log('✅ Chan Hyc 秘密基地已載入（音樂播放器：自動偵測 MP3）');
 </script>
 </body>
 </html>
