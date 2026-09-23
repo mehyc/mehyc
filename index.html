@@ -88,14 +88,14 @@
             margin-top: 10px;
         }
 
-        /* 自動淡出延遲（3.5秒後開始淡出，4.3秒後完全消失） */
+        /* 自動淡出延遲 */
         .welcome-overlay.auto-hide {
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.8s ease, visibility 0.8s ease;
         }
 
-        /* 主内容初始半透明，弹窗关闭后显示 */
+        /* 主内容初始半透明 */
         .main-wrapper {
             opacity: 0;
             transition: opacity 0.8s ease;
@@ -495,6 +495,117 @@
             transform: scale(1.02);
         }
 
+        /* ========= 音樂播放器 ========= */
+        .music-player {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
+            border-radius: 1.8rem;
+            padding: 1rem 1.2rem;
+            margin-top: 1.2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .music-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #cdc7ff;
+            text-align: center;
+            margin-bottom: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+        .music-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 0.8rem;
+        }
+        .music-controls button {
+            background: rgba(25, 30, 45, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #F1F3FF;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+        .music-controls button:hover {
+            background: rgba(85, 70, 180, 0.8);
+            transform: scale(1.05);
+        }
+        .music-controls button:active {
+            transform: scale(0.95);
+        }
+        .music-controls .play-btn {
+            width: 56px;
+            height: 56px;
+            font-size: 1.4rem;
+            background: linear-gradient(135deg, #6f5cf1, #aa4eff);
+            border: none;
+            box-shadow: 0 4px 15px rgba(106, 90, 205, 0.4);
+        }
+        .music-controls .play-btn:hover {
+            background: linear-gradient(135deg, #7f6cf1, #ba5eff);
+            box-shadow: 0 6px 20px rgba(106, 90, 205, 0.6);
+        }
+        .volume-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .volume-section i {
+            color: #b7adff;
+            font-size: 1rem;
+            width: 20px;
+            text-align: center;
+        }
+        .volume-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 5px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.15);
+            outline: none;
+            cursor: pointer;
+        }
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6f5cf1, #aa4eff);
+            cursor: pointer;
+            box-shadow: 0 0 8px rgba(106, 90, 205, 0.6);
+        }
+        .volume-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6f5cf1, #aa4eff);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 8px rgba(106, 90, 205, 0.6);
+        }
+        .volume-value {
+            font-size: 0.75rem;
+            color: #9f9fcf;
+            font-family: monospace;
+            width: 35px;
+            text-align: right;
+        }
+        .music-info {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #8e93b0;
+            margin-top: 0.5rem;
+        }
+
         /* ========= 倒數計時器樣式 ========= */
         .countdown-container {
             background: rgba(0, 0, 0, 0.25);
@@ -614,6 +725,8 @@
             .info-card .info-content { font-size: 0.9rem; }
             .cancer-card { padding: 1.5rem; max-height: 80vh; }
             .cancer-card .cancer-content { font-size: 0.88rem; }
+            .music-controls button { width: 38px; height: 38px; font-size: 0.95rem; }
+            .music-controls .play-btn { width: 48px; height: 48px; font-size: 1.2rem; }
         }
     </style>
 </head>
@@ -667,7 +780,7 @@
                         <i class="fas fa-user-secret"></i><span>匿名</span>
                     </a>
 
-                    <!-- 預約系統按鈕（新增） -->
+                    <!-- 預約系統按鈕 -->
                     <a href="https://mehyc.github.io/reserve/" target="_blank" rel="noopener noreferrer" class="link-btn">
                         <i class="fas fa-calendar-check"></i><span>預約系統</span>
                     </a>
@@ -694,6 +807,23 @@
                         <i class="fab fa-tiktok"></i><span>抖音 TikTok</span>
                     </a>
                 </div>
+
+                <!-- ===== 音樂播放器 ===== -->
+                <div class="music-player">
+                    <div class="music-title">🎵 音樂播放器</div>
+                    <div class="music-controls">
+                        <button id="prevBtn" title="上一首"><i class="fas fa-backward"></i></button>
+                        <button id="playPauseBtn" class="play-btn" title="播放/暫停"><i class="fas fa-play" id="playIcon"></i></button>
+                        <button id="nextBtn" title="下一首"><i class="fas fa-forward"></i></button>
+                    </div>
+                    <div class="volume-section">
+                        <i class="fas fa-volume-down" id="volumeIcon"></i>
+                        <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="70">
+                        <span class="volume-value" id="volumeValue">70%</span>
+                    </div>
+                    <div class="music-info" id="musicInfo">第 1 / 3 首</div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -794,8 +924,11 @@
     </div>
 </div>
 
+<!-- 隱藏的音樂播放元素 -->
+<audio id="audioPlayer" preload="auto"></audio>
+
 <script>
-    // ========= 歡迎彈窗自動淡出（3.5秒後開始淡出） =========
+    // ========= 歡迎彈窗自動淡出 =========
     const welcomeOverlay = document.getElementById('welcomeOverlay');
     const mainWrapper = document.getElementById('mainWrapper');
 
@@ -807,10 +940,142 @@
             if (typeof startRealtimeCounter === 'function') startRealtimeCounter();
             if (typeof bindButtons === 'function') bindButtons();
             document.body.style.overflow = '';
+            // 播放語音歡迎
+            speakWelcome();
         }, 800);
     }, 3500);
 
     document.body.style.overflow = 'hidden';
+
+    // ========= 音樂播放系統 =========
+    // 📌 請將以下網址替換為您的音樂檔案網址
+    // 可以使用 Firebase Storage、Google Drive 直連、或任何公開的 MP3 URL
+    const playlist = [
+        { title: "歌曲 1", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+        { title: "歌曲 2", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
+        { title: "歌曲 3", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" }
+    ];
+
+    const audio = document.getElementById('audioPlayer');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const playIcon = document.getElementById('playIcon');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const volumeValue = document.getElementById('volumeValue');
+    const volumeIcon = document.getElementById('volumeIcon');
+    const musicInfo = document.getElementById('musicInfo');
+
+    let currentIndex = 0;
+    let isPlaying = false;
+
+    // 載入第一首歌
+    function loadTrack(index) {
+        audio.src = playlist[index].src;
+        audio.load();
+        musicInfo.innerText = `第 ${index + 1} / ${playlist.length} 首 · ${playlist[index].title}`;
+    }
+
+    // 播放
+    function playAudio() {
+        audio.play().then(() => {
+            isPlaying = true;
+            playIcon.className = 'fas fa-pause';
+        }).catch(err => {
+            console.log('播放失敗:', err);
+            // 瀏覽器可能阻擋自動播放，需要用戶手動點擊
+        });
+    }
+
+    // 暫停
+    function pauseAudio() {
+        audio.pause();
+        isPlaying = false;
+        playIcon.className = 'fas fa-play';
+    }
+
+    // 播放/暫停切換
+    playPauseBtn.addEventListener('click', () => {
+        if (isPlaying) {
+            pauseAudio();
+        } else {
+            playAudio();
+        }
+    });
+
+    // 上一首
+    prevBtn.addEventListener('click', () => {
+        currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+        loadTrack(currentIndex);
+        if (isPlaying) playAudio();
+    });
+
+    // 下一首
+    nextBtn.addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % playlist.length;
+        loadTrack(currentIndex);
+        if (isPlaying) playAudio();
+    });
+
+    // 音量控制
+    volumeSlider.addEventListener('input', (e) => {
+        const val = e.target.value;
+        audio.volume = val / 100;
+        volumeValue.innerText = val + '%';
+        // 更新音量圖示
+        if (val == 0) {
+            volumeIcon.className = 'fas fa-volume-mute';
+        } else if (val < 50) {
+            volumeIcon.className = 'fas fa-volume-down';
+        } else {
+            volumeIcon.className = 'fas fa-volume-up';
+        }
+    });
+
+    // 初始化音量為 70%
+    audio.volume = 0.7;
+    volumeValue.innerText = '70%';
+
+    // 歌曲播放結束後自動下一首
+    audio.addEventListener('ended', () => {
+        currentIndex = (currentIndex + 1) % playlist.length;
+        loadTrack(currentIndex);
+        playAudio();
+    });
+
+    // 載入第一首
+    loadTrack(0);
+
+    // ========= 語音歡迎功能 =========
+    function speakWelcome() {
+        if (!('speechSynthesis' in window)) {
+            console.log('瀏覽器不支援語音合成');
+            return;
+        }
+
+        // 等待 1 秒後開始說話
+        setTimeout(() => {
+            const utterance = new SpeechSynthesisUtterance(`歡迎使用 hyc 網頁音樂系統，音樂總共有 ${playlist.length} 首`);
+            utterance.lang = 'zh-TW';
+            utterance.rate = 0.9;
+            utterance.pitch = 1.1;
+            utterance.volume = 1.0;
+
+            // 選擇中文語音（如果有）
+            const voices = window.speechSynthesis.getVoices();
+            const chineseVoice = voices.find(voice => voice.lang.includes('zh'));
+            if (chineseVoice) {
+                utterance.voice = chineseVoice;
+            }
+
+            window.speechSynthesis.speak(utterance);
+        }, 1200);
+    }
+
+    // 由於語音列表可能非同步載入，先觸發一次
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.getVoices();
+    }
 
     // ========= Firebase 瀏覽次數計數器 =========
     const firebaseConfig = {
@@ -927,7 +1192,7 @@
     updateDateTime();
     setInterval(updateDateTime, 1000);
 
-    // ========= 倒數計時器 (目標日期: 2026-06-28) =========
+    // ========= 倒數計時器 =========
     const TARGET_DATE = new Date(2026, 5, 28);
     const mainDisplay = document.getElementById('countdownMain');
     const subDisplay = document.getElementById('countdownSub');
@@ -1069,7 +1334,7 @@
         if (btns[5]) btns[5].addEventListener('click', () => showToast('🎵 追蹤抖音 TikTok · 精彩短影音'));
     }
 
-    console.log('✅ Chan Hyc 秘密基地已載入（已新增預約系統按鈕）');
+    console.log('✅ Chan Hyc 秘密基地已載入（已加入音樂播放器與語音歡迎）');
 </script>
 </body>
 </html>
