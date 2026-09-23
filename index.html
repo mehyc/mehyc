@@ -88,14 +88,12 @@
             margin-top: 10px;
         }
 
-        /* 自動淡出延遲 */
         .welcome-overlay.auto-hide {
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.8s ease, visibility 0.8s ease;
         }
 
-        /* 主内容初始半透明 */
         .main-wrapper {
             opacity: 0;
             transition: opacity 0.8s ease;
@@ -495,12 +493,12 @@
             transform: scale(1.02);
         }
 
-        /* ========= 音樂播放器 ========= */
+        /* ========= 音樂播放器（升級版） ========= */
         .music-player {
             background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(8px);
             border-radius: 1.8rem;
-            padding: 1rem 1.2rem;
+            padding: 1rem 1.2rem 1.2rem;
             margin-top: 1.2rem;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
@@ -512,24 +510,76 @@
             margin-bottom: 0.8rem;
             letter-spacing: 0.5px;
         }
+
+        /* 進度條 */
+        .progress-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0.8rem;
+        }
+        .progress-section .time-label {
+            font-size: 0.65rem;
+            color: #8e93b0;
+            font-family: monospace;
+            min-width: 32px;
+            text-align: center;
+        }
+        .progress-bar {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 5px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.15);
+            outline: none;
+            cursor: pointer;
+        }
+        .progress-bar::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6f5cf1, #aa4eff);
+            cursor: pointer;
+            box-shadow: 0 0 8px rgba(106, 90, 205, 0.6);
+        }
+        .progress-bar::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6f5cf1, #aa4eff);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 8px rgba(106, 90, 205, 0.6);
+        }
+
+        /* 控制按鈕 + 直立音量 */
+        .music-main-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
         .music-controls {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 1rem;
-            margin-bottom: 0.8rem;
+            gap: 0.8rem;
         }
         .music-controls button {
             background: rgba(25, 30, 45, 0.9);
             border: 1px solid rgba(255, 255, 255, 0.15);
             color: #F1F3FF;
-            width: 44px;
-            height: 44px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
+            font-size: 1rem;
             cursor: pointer;
             transition: 0.25s;
         }
@@ -541,9 +591,9 @@
             transform: scale(0.95);
         }
         .music-controls .play-btn {
-            width: 56px;
-            height: 56px;
-            font-size: 1.4rem;
+            width: 52px;
+            height: 52px;
+            font-size: 1.3rem;
             background: linear-gradient(135deg, #6f5cf1, #aa4eff);
             border: none;
             box-shadow: 0 4px 15px rgba(106, 90, 205, 0.4);
@@ -552,53 +602,55 @@
             background: linear-gradient(135deg, #7f6cf1, #ba5eff);
             box-shadow: 0 6px 20px rgba(106, 90, 205, 0.6);
         }
-        .volume-section {
+
+        /* 直立式音量 */
+        .volume-vertical-wrapper {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 10px;
+            gap: 4px;
         }
-        .volume-section i {
+        .volume-vertical-wrapper .vol-icon {
             color: #b7adff;
-            font-size: 1rem;
-            width: 20px;
-            text-align: center;
+            font-size: 0.85rem;
         }
-        .volume-slider {
-            flex: 1;
+        .volume-vertical {
             -webkit-appearance: none;
             appearance: none;
-            height: 5px;
+            width: 5px;
+            height: 70px;
             border-radius: 5px;
             background: rgba(255, 255, 255, 0.15);
             outline: none;
             cursor: pointer;
+            writing-mode: vertical-lr;
+            direction: rtl;
         }
-        .volume-slider::-webkit-slider-thumb {
+        .volume-vertical::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             background: linear-gradient(135deg, #6f5cf1, #aa4eff);
             cursor: pointer;
             box-shadow: 0 0 8px rgba(106, 90, 205, 0.6);
         }
-        .volume-slider::-moz-range-thumb {
-            width: 16px;
-            height: 16px;
+        .volume-vertical::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             background: linear-gradient(135deg, #6f5cf1, #aa4eff);
             cursor: pointer;
             border: none;
             box-shadow: 0 0 8px rgba(106, 90, 205, 0.6);
         }
-        .volume-value {
-            font-size: 0.75rem;
+        .volume-value-small {
+            font-size: 0.6rem;
             color: #9f9fcf;
             font-family: monospace;
-            width: 35px;
-            text-align: right;
         }
+
         .music-info {
             text-align: center;
             font-size: 0.7rem;
@@ -725,8 +777,9 @@
             .info-card .info-content { font-size: 0.9rem; }
             .cancer-card { padding: 1.5rem; max-height: 80vh; }
             .cancer-card .cancer-content { font-size: 0.88rem; }
-            .music-controls button { width: 38px; height: 38px; font-size: 0.95rem; }
-            .music-controls .play-btn { width: 48px; height: 48px; font-size: 1.2rem; }
+            .music-controls button { width: 36px; height: 36px; font-size: 0.85rem; }
+            .music-controls .play-btn { width: 46px; height: 46px; font-size: 1.1rem; }
+            .volume-vertical { height: 55px; }
         }
     </style>
 </head>
@@ -808,20 +861,34 @@
                     </a>
                 </div>
 
-                <!-- ===== 音樂播放器 ===== -->
+                <!-- ===== 音樂播放器（升級版） ===== -->
                 <div class="music-player">
                     <div class="music-title">🎵 音樂播放器</div>
-                    <div class="music-controls">
-                        <button id="prevBtn" title="上一首"><i class="fas fa-backward"></i></button>
-                        <button id="playPauseBtn" class="play-btn" title="播放/暫停"><i class="fas fa-play" id="playIcon"></i></button>
-                        <button id="nextBtn" title="下一首"><i class="fas fa-forward"></i></button>
+
+                    <!-- 進度條 -->
+                    <div class="progress-section">
+                        <span class="time-label" id="currentTimeLabel">0:00</span>
+                        <input type="range" class="progress-bar" id="progressBar" min="0" max="100" value="0" step="0.1">
+                        <span class="time-label" id="durationLabel">0:00</span>
                     </div>
-                    <div class="volume-section">
-                        <i class="fas fa-volume-down" id="volumeIcon"></i>
-                        <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="70">
-                        <span class="volume-value" id="volumeValue">70%</span>
+
+                    <!-- 控制列 + 直立音量 -->
+                    <div class="music-main-row">
+                        <div class="music-controls">
+                            <button id="prevBtn" title="上一首"><i class="fas fa-backward"></i></button>
+                            <button id="playPauseBtn" class="play-btn" title="播放/暫停"><i class="fas fa-play" id="playIcon"></i></button>
+                            <button id="nextBtn" title="下一首"><i class="fas fa-forward"></i></button>
+                        </div>
+
+                        <!-- 直立式音量 -->
+                        <div class="volume-vertical-wrapper">
+                            <i class="fas fa-volume-up vol-icon" id="volIconTop"></i>
+                            <input type="range" class="volume-vertical" id="volumeVertical" min="0" max="100" value="70">
+                            <span class="volume-value-small" id="volumeValueSmall">70%</span>
+                        </div>
                     </div>
-                    <div class="music-info" id="musicInfo">第 1 / 3 首</div>
+
+                    <div class="music-info" id="musicInfo">第 1 / 60 首 · 載入中...</div>
                 </div>
 
             </div>
@@ -940,20 +1007,79 @@
             if (typeof startRealtimeCounter === 'function') startRealtimeCounter();
             if (typeof bindButtons === 'function') bindButtons();
             document.body.style.overflow = '';
-            // 播放語音歡迎
             speakWelcome();
         }, 800);
     }, 3500);
 
     document.body.style.overflow = 'hidden';
 
-    // ========= 音樂播放系統 =========
-    // 📌 請將以下網址替換為您的音樂檔案網址
-    // 可以使用 Firebase Storage、Google Drive 直連、或任何公開的 MP3 URL
+    // ============================================================
+    // 🎵 音樂播放系統（60 首，直接放在 GitHub 根目錄）
+    // ============================================================
+    // 📌 MP3 檔案與 index.html 放在同一層，路徑直接寫檔名即可
+    // ============================================================
+
     const playlist = [
-        { title: "歌曲 1", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-        { title: "歌曲 2", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
-        { title: "歌曲 3", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" }
+        { title: "歌曲 01", src: "01.mp3" },
+        { title: "歌曲 02", src: "02.mp3" },
+        { title: "歌曲 03", src: "03.mp3" },
+        { title: "歌曲 04", src: "04.mp3" },
+        { title: "歌曲 05", src: "05.mp3" },
+        { title: "歌曲 06", src: "06.mp3" },
+        { title: "歌曲 07", src: "07.mp3" },
+        { title: "歌曲 08", src: "08.mp3" },
+        { title: "歌曲 09", src: "09.mp3" },
+        { title: "歌曲 10", src: "10.mp3" },
+        { title: "歌曲 11", src: "11.mp3" },
+        { title: "歌曲 12", src: "12.mp3" },
+        { title: "歌曲 13", src: "13.mp3" },
+        { title: "歌曲 14", src: "14.mp3" },
+        { title: "歌曲 15", src: "15.mp3" },
+        { title: "歌曲 16", src: "16.mp3" },
+        { title: "歌曲 17", src: "17.mp3" },
+        { title: "歌曲 18", src: "18.mp3" },
+        { title: "歌曲 19", src: "19.mp3" },
+        { title: "歌曲 20", src: "20.mp3" },
+        { title: "歌曲 21", src: "21.mp3" },
+        { title: "歌曲 22", src: "22.mp3" },
+        { title: "歌曲 23", src: "23.mp3" },
+        { title: "歌曲 24", src: "24.mp3" },
+        { title: "歌曲 25", src: "25.mp3" },
+        { title: "歌曲 26", src: "26.mp3" },
+        { title: "歌曲 27", src: "27.mp3" },
+        { title: "歌曲 28", src: "28.mp3" },
+        { title: "歌曲 29", src: "29.mp3" },
+        { title: "歌曲 30", src: "30.mp3" },
+        { title: "歌曲 31", src: "31.mp3" },
+        { title: "歌曲 32", src: "32.mp3" },
+        { title: "歌曲 33", src: "33.mp3" },
+        { title: "歌曲 34", src: "34.mp3" },
+        { title: "歌曲 35", src: "35.mp3" },
+        { title: "歌曲 36", src: "36.mp3" },
+        { title: "歌曲 37", src: "37.mp3" },
+        { title: "歌曲 38", src: "38.mp3" },
+        { title: "歌曲 39", src: "39.mp3" },
+        { title: "歌曲 40", src: "40.mp3" },
+        { title: "歌曲 41", src: "41.mp3" },
+        { title: "歌曲 42", src: "42.mp3" },
+        { title: "歌曲 43", src: "43.mp3" },
+        { title: "歌曲 44", src: "44.mp3" },
+        { title: "歌曲 45", src: "45.mp3" },
+        { title: "歌曲 46", src: "46.mp3" },
+        { title: "歌曲 47", src: "47.mp3" },
+        { title: "歌曲 48", src: "48.mp3" },
+        { title: "歌曲 49", src: "49.mp3" },
+        { title: "歌曲 50", src: "50.mp3" },
+        { title: "歌曲 51", src: "51.mp3" },
+        { title: "歌曲 52", src: "52.mp3" },
+        { title: "歌曲 53", src: "53.mp3" },
+        { title: "歌曲 54", src: "54.mp3" },
+        { title: "歌曲 55", src: "55.mp3" },
+        { title: "歌曲 56", src: "56.mp3" },
+        { title: "歌曲 57", src: "57.mp3" },
+        { title: "歌曲 58", src: "58.mp3" },
+        { title: "歌曲 59", src: "59.mp3" },
+        { title: "歌曲 60", src: "60.mp3" }
     ];
 
     const audio = document.getElementById('audioPlayer');
@@ -961,118 +1087,141 @@
     const playIcon = document.getElementById('playIcon');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
-    const volumeSlider = document.getElementById('volumeSlider');
-    const volumeValue = document.getElementById('volumeValue');
-    const volumeIcon = document.getElementById('volumeIcon');
+    const volumeVertical = document.getElementById('volumeVertical');
+    const volumeValueSmall = document.getElementById('volumeValueSmall');
+    const volIconTop = document.getElementById('volIconTop');
     const musicInfo = document.getElementById('musicInfo');
+    const progressBar = document.getElementById('progressBar');
+    const currentTimeLabel = document.getElementById('currentTimeLabel');
+    const durationLabel = document.getElementById('durationLabel');
 
     let currentIndex = 0;
     let isPlaying = false;
+    let isDraggingProgress = false;
 
-    // 載入第一首歌
+    function formatTime(seconds) {
+        if (isNaN(seconds) || seconds < 0) return '0:00';
+        const m = Math.floor(seconds / 60);
+        const s = Math.floor(seconds % 60);
+        return `${m}:${String(s).padStart(2, '0')}`;
+    }
+
     function loadTrack(index) {
+        if (index < 0 || index >= playlist.length) return;
+        currentIndex = index;
         audio.src = playlist[index].src;
         audio.load();
         musicInfo.innerText = `第 ${index + 1} / ${playlist.length} 首 · ${playlist[index].title}`;
+        progressBar.value = 0;
+        currentTimeLabel.innerText = '0:00';
+        durationLabel.innerText = '0:00';
     }
 
-    // 播放
     function playAudio() {
         audio.play().then(() => {
             isPlaying = true;
             playIcon.className = 'fas fa-pause';
         }).catch(err => {
             console.log('播放失敗:', err);
-            // 瀏覽器可能阻擋自動播放，需要用戶手動點擊
+            showToast('⚠️ 請手動點擊播放按鈕');
         });
     }
 
-    // 暫停
     function pauseAudio() {
         audio.pause();
         isPlaying = false;
         playIcon.className = 'fas fa-play';
     }
 
-    // 播放/暫停切換
     playPauseBtn.addEventListener('click', () => {
-        if (isPlaying) {
-            pauseAudio();
-        } else {
-            playAudio();
-        }
+        if (isPlaying) pauseAudio();
+        else playAudio();
     });
 
-    // 上一首
     prevBtn.addEventListener('click', () => {
-        currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
-        loadTrack(currentIndex);
+        const newIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+        loadTrack(newIndex);
         if (isPlaying) playAudio();
     });
 
-    // 下一首
     nextBtn.addEventListener('click', () => {
-        currentIndex = (currentIndex + 1) % playlist.length;
-        loadTrack(currentIndex);
+        const newIndex = (currentIndex + 1) % playlist.length;
+        loadTrack(newIndex);
         if (isPlaying) playAudio();
     });
 
-    // 音量控制
-    volumeSlider.addEventListener('input', (e) => {
-        const val = e.target.value;
-        audio.volume = val / 100;
-        volumeValue.innerText = val + '%';
-        // 更新音量圖示
-        if (val == 0) {
-            volumeIcon.className = 'fas fa-volume-mute';
-        } else if (val < 50) {
-            volumeIcon.className = 'fas fa-volume-down';
-        } else {
-            volumeIcon.className = 'fas fa-volume-up';
+    // 進度條
+    audio.addEventListener('timeupdate', () => {
+        if (!isDraggingProgress && audio.duration) {
+            const percent = (audio.currentTime / audio.duration) * 100;
+            progressBar.value = percent;
+            currentTimeLabel.innerText = formatTime(audio.currentTime);
         }
     });
 
-    // 初始化音量為 70%
-    audio.volume = 0.7;
-    volumeValue.innerText = '70%';
+    audio.addEventListener('loadedmetadata', () => {
+        durationLabel.innerText = formatTime(audio.duration);
+    });
 
-    // 歌曲播放結束後自動下一首
+    progressBar.addEventListener('input', (e) => {
+        isDraggingProgress = true;
+        const percent = e.target.value;
+        if (audio.duration) {
+            currentTimeLabel.innerText = formatTime((percent / 100) * audio.duration);
+        }
+    });
+
+    progressBar.addEventListener('change', (e) => {
+        const percent = e.target.value;
+        if (audio.duration) {
+            audio.currentTime = (percent / 100) * audio.duration;
+        }
+        isDraggingProgress = false;
+    });
+
     audio.addEventListener('ended', () => {
-        currentIndex = (currentIndex + 1) % playlist.length;
-        loadTrack(currentIndex);
+        const newIndex = (currentIndex + 1) % playlist.length;
+        loadTrack(newIndex);
         playAudio();
     });
 
-    // 載入第一首
+    // 直立式音量
+    volumeVertical.addEventListener('input', (e) => {
+        const val = e.target.value;
+        audio.volume = val / 100;
+        volumeValueSmall.innerText = val + '%';
+        if (val == 0) {
+            volIconTop.className = 'fas fa-volume-mute vol-icon';
+        } else if (val < 50) {
+            volIconTop.className = 'fas fa-volume-down vol-icon';
+        } else {
+            volIconTop.className = 'fas fa-volume-up vol-icon';
+        }
+    });
+
+    audio.volume = 0.7;
+    volumeValueSmall.innerText = '70%';
+
     loadTrack(0);
 
-    // ========= 語音歡迎功能 =========
+    // ========= 語音歡迎 =========
     function speakWelcome() {
-        if (!('speechSynthesis' in window)) {
-            console.log('瀏覽器不支援語音合成');
-            return;
-        }
-
-        // 等待 1 秒後開始說話
+        if (!('speechSynthesis' in window)) return;
         setTimeout(() => {
-            const utterance = new SpeechSynthesisUtterance(`歡迎使用 hyc 網頁音樂系統，音樂總共有 ${playlist.length} 首`);
+            const utterance = new SpeechSynthesisUtterance(
+                `歡迎使用 hyc 網頁音樂系統，音樂總共有 ${playlist.length} 首`
+            );
             utterance.lang = 'zh-TW';
             utterance.rate = 0.9;
             utterance.pitch = 1.1;
             utterance.volume = 1.0;
-
-            // 選擇中文語音（如果有）
             const voices = window.speechSynthesis.getVoices();
             const chineseVoice = voices.find(voice => voice.lang.includes('zh'));
-            if (chineseVoice) {
-                utterance.voice = chineseVoice;
-            }
-
+            if (chineseVoice) utterance.voice = chineseVoice;
             window.speechSynthesis.speak(utterance);
         }, 1200);
     }
 
-    // 由於語音列表可能非同步載入，先觸發一次
     if ('speechSynthesis' in window) {
         window.speechSynthesis.getVoices();
     }
@@ -1108,7 +1257,7 @@
         }
     }
 
-    // ========= 個人資料彈窗控制 =========
+    // ========= 個人資料彈窗 =========
     const infoBtn = document.getElementById('infoBtn');
     const infoOverlay = document.getElementById('infoOverlay');
     const infoCloseBtn = document.getElementById('infoCloseBtn');
@@ -1117,12 +1266,10 @@
         infoOverlay.classList.add('active');
         document.body.style.overflow = 'hidden';
     });
-
     infoCloseBtn.addEventListener('click', () => {
         infoOverlay.classList.remove('active');
         document.body.style.overflow = '';
     });
-
     infoOverlay.addEventListener('click', (e) => {
         if (e.target === infoOverlay) {
             infoOverlay.classList.remove('active');
@@ -1130,7 +1277,7 @@
         }
     });
 
-    // ========= 巨蟹座彈窗控制 =========
+    // ========= 巨蟹座彈窗 =========
     const cancerBtn = document.getElementById('cancerBtn');
     const cancerOverlay = document.getElementById('cancerOverlay');
     const cancerCloseBtn = document.getElementById('cancerCloseBtn');
@@ -1139,12 +1286,10 @@
         cancerOverlay.classList.add('active');
         document.body.style.overflow = 'hidden';
     });
-
     cancerCloseBtn.addEventListener('click', () => {
         cancerOverlay.classList.remove('active');
         document.body.style.overflow = '';
     });
-
     cancerOverlay.addEventListener('click', (e) => {
         if (e.target === cancerOverlay) {
             cancerOverlay.classList.remove('active');
@@ -1152,7 +1297,7 @@
         }
     });
 
-    // ========= 座右銘彈窗控制 =========
+    // ========= 座右銘彈窗 =========
     const mottoBtn = document.getElementById('mottoBtn');
     const mottoOverlay = document.getElementById('mottoOverlay');
     const mottoCloseBtn = document.getElementById('mottoCloseBtn');
@@ -1161,12 +1306,10 @@
         mottoOverlay.classList.add('active');
         document.body.style.overflow = 'hidden';
     });
-
     mottoCloseBtn.addEventListener('click', () => {
         mottoOverlay.classList.remove('active');
         document.body.style.overflow = '';
     });
-
     mottoOverlay.addEventListener('click', (e) => {
         if (e.target === mottoOverlay) {
             mottoOverlay.classList.remove('active');
@@ -1205,13 +1348,9 @@
         target = new Date(Date.UTC(target.getFullYear(), target.getMonth(), target.getDate(), 0, 0, 0));
         const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         const targetDate = new Date(target.getFullYear(), target.getMonth(), target.getDate());
-        if (targetDate < nowDate) {
-            target.setFullYear(target.getFullYear() + 1);
-        }
+        if (targetDate < nowDate) target.setFullYear(target.getFullYear() + 1);
         const targetDate2 = new Date(target.getFullYear(), target.getMonth(), target.getDate());
-        if (targetDate2 < nowDate) {
-            target.setFullYear(target.getFullYear() + 1);
-        }
+        if (targetDate2 < nowDate) target.setFullYear(target.getFullYear() + 1);
         return target;
     }
 
@@ -1253,15 +1392,8 @@
         const pad = (n) => String(n).padStart(2, '0');
 
         return {
-            totalDays,
-            totalWeeks,
-            totalMonths,
-            daysRemainder,
-            daysRemainderWeek,
-            hours: pad(hours),
-            minutes: pad(minutes),
-            seconds: pad(seconds),
-            specialStatus
+            totalDays, totalWeeks, totalMonths, daysRemainder, daysRemainderWeek,
+            hours: pad(hours), minutes: pad(minutes), seconds: pad(seconds), specialStatus
         };
     }
 
@@ -1285,7 +1417,6 @@
                 default: mainHtml = `${parts.totalDays} <span class="unit">天</span>`;
             }
         }
-
         mainDisplay.innerHTML = mainHtml;
         subDisplay.innerText = subStr;
     }
@@ -1298,9 +1429,7 @@
         }
         mode = (mode + 1) % 3;
         const hint = this.querySelector('.countdown-hint');
-        if (hint) {
-            hint.innerHTML = `<i class="fas fa-mouse-pointer"></i> ${MODE_NAMES[mode]}`;
-        }
+        if (hint) hint.innerHTML = `<i class="fas fa-mouse-pointer"></i> ${MODE_NAMES[mode]}`;
         updateCountdown();
         showToast(`📅 切換為 ${MODE_NAMES[mode]}`);
     });
@@ -1308,7 +1437,7 @@
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
-    // ========= Toast 工具 & 按鈕綁定 =========
+    // ========= Toast =========
     const toastEl = document.getElementById('toastMsg');
     let toastTimer = null;
     window.showToast = function(msg) {
@@ -1334,7 +1463,7 @@
         if (btns[5]) btns[5].addEventListener('click', () => showToast('🎵 追蹤抖音 TikTok · 精彩短影音'));
     }
 
-    console.log('✅ Chan Hyc 秘密基地已載入（已加入音樂播放器與語音歡迎）');
+    console.log('✅ Chan Hyc 秘密基地已載入（音樂播放器：60首、純檔名路徑、直立音量、進度條）');
 </script>
 </body>
 </html>
