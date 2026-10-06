@@ -317,7 +317,38 @@
             padding: 0.8rem; text-align: center;
             font-size: 0.75rem; color: #b4b7d6; z-index: 99;
         }
-        .footer-stats { margin-top: 4px; font-size: 0.7rem; color: #9f9fcf; }
+        .footer-stats {
+            margin-top: 4px; font-size: 0.7rem; color: #9f9fcf;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        /* 🟢 呼吸閃爍綠燈 */
+        .green-pulse {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            position: relative;
+            animation: greenPulse 1.5s ease-in-out infinite;
+            box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+        }
+        @keyframes greenPulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7), 0 0 4px 1px rgba(34, 197, 94, 0.6);
+            }
+            50% {
+                transform: scale(1.25);
+                opacity: 0.85;
+                box-shadow: 0 0 0 8px rgba(34, 197, 94, 0), 0 0 12px 4px rgba(34, 197, 94, 0.8);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7), 0 0 4px 1px rgba(34, 197, 94, 0.6);
+            }
+        }
         .toast-msg {
             position: fixed; bottom: 100px; left: 50%;
             transform: translateX(-50%); background: rgba(30, 35, 55, 0.95);
@@ -448,7 +479,10 @@
     <div class="fixed-footer">
         <div>© chan hyc 開發及維護 · 多了解我</div>
         <div>官方LINE ID：<strong>@377mewyu</strong> (歡迎私訊)</div>
-        <div class="footer-stats"><i class="fas fa-chart-line"></i> 總瀏覽次數：<span id="total_view_display">讀取中...</span></div>
+        <div class="footer-stats">
+            <span class="green-pulse"></span>
+            📊 總瀏覽次數：<span id="total_view_display">讀取中...</span>
+        </div>
     </div>
     <div id="toastMsg" class="toast-msg">✨ 操作成功</div>
 </div>
@@ -561,9 +595,6 @@
     // ============================================================
     // 🎵 音樂播放系統（自動偵測存在的 MP3）
     // ============================================================
-    // 📌 程式會自動檢查 01.mp3 ~ 60.mp3 哪些存在
-    // 📌 不存在的會自動跳過，不會報錯
-    // ============================================================
 
     const audio = document.getElementById('audioPlayer');
     const playPauseBtn = document.getElementById('playPauseBtn');
@@ -578,12 +609,11 @@
     const currentTimeLabel = document.getElementById('currentTimeLabel');
     const durationLabel = document.getElementById('durationLabel');
 
-    let playlist = [];   // 實際存在的歌曲
+    let playlist = [];
     let currentIndex = 0;
     let isPlaying = false;
     let isDraggingProgress = false;
 
-    // 格式化時間 mm:ss
     function formatTime(seconds) {
         if (isNaN(seconds) || seconds < 0) return '0:00';
         const m = Math.floor(seconds / 60);
@@ -591,7 +621,6 @@
         return `${m}:${String(s).padStart(2, '0')}`;
     }
 
-    // 檢查單一檔案是否存在
     function checkFileExists(url) {
         return new Promise((resolve) => {
             const xhr = new XMLHttpRequest();
@@ -602,7 +631,6 @@
         });
     }
 
-    // 掃描 01.mp3 ~ 60.mp3，找出實際存在的檔案
     async function scanMusicFiles() {
         musicInfo.innerText = '🔍 掃描音樂檔案中...';
         const found = [];
@@ -621,7 +649,6 @@
         }
 
         await Promise.all(checks);
-        // 按檔名數字排序
         found.sort((a, b) => a.index - b.index);
         playlist = found;
 
@@ -633,11 +660,9 @@
 
         musicInfo.innerText = `共找到 ${playlist.length} 首音樂`;
         loadTrack(0);
-        // 更新語音歡迎的歌曲數
         updateWelcomeVoice();
     }
 
-    // 載入歌曲
     function loadTrack(index) {
         if (index < 0 || index >= playlist.length) return;
         currentIndex = index;
@@ -649,7 +674,6 @@
         durationLabel.innerText = '0:00';
     }
 
-    // 播放
     function playAudio() {
         if (playlist.length === 0) {
             showToast('⚠️ 尚無可播放的音樂');
@@ -695,7 +719,6 @@
         if (isPlaying) playAudio();
     });
 
-    // 進度條
     audio.addEventListener('timeupdate', () => {
         if (!isDraggingProgress && audio.duration) {
             const percent = (audio.currentTime / audio.duration) * 100;
@@ -731,7 +754,6 @@
         playAudio();
     });
 
-    // 直立式音量
     volumeVertical.addEventListener('input', (e) => {
         const val = e.target.value;
         audio.volume = val / 100;
@@ -748,11 +770,9 @@
     audio.volume = 0.7;
     volumeValueSmall.innerText = '70%';
 
-    // ========= 語音歡迎（動態更新歌曲數） =========
     let welcomeSpoken = false;
 
     function updateWelcomeVoice() {
-        // 掃描完成後，如果語音還沒播放過，就播放
         if (!welcomeSpoken && playlist.length > 0) {
             speakWelcome();
         }
@@ -783,7 +803,6 @@
         window.speechSynthesis.getVoices();
     }
 
-    // 啟動掃描
     scanMusicFiles();
 
     // ========= Firebase 瀏覽次數計數器 =========
@@ -1021,7 +1040,7 @@
         if (btns[5]) btns[5].addEventListener('click', () => showToast('🎵 追蹤抖音 TikTok · 精彩短影音'));
     }
 
-    console.log('✅ Chan Hyc 秘密基地已載入（音樂播放器：自動偵測 MP3）');
+    console.log('✅ Chan Hyc 秘密基地已載入（🟢 總瀏覽次數呼吸綠燈已啟用）');
 </script>
 </body>
 </html>
