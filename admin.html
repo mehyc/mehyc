@@ -16,7 +16,7 @@
             font-family: 'Inter', system-ui, sans-serif;
             color: #f0f0f5;
             min-height: 100vh;
-            padding: 2rem 1.5rem;
+            padding: 1.5rem;
         }
 
         .admin-container {
@@ -24,23 +24,48 @@
             margin: 0 auto;
         }
 
-        .admin-header {
-            text-align: center;
+        /* ===== 頂部標題列 ===== */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 2rem;
+            padding: 0.5rem 0;
         }
-        .admin-header h1 {
-            font-size: 1.8rem;
+        .top-bar .title-box h1 {
+            font-size: 1.5rem;
             font-weight: 700;
             background: linear-gradient(115deg, #FFF, #cdc7ff);
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
-            margin-bottom: 0.5rem;
         }
-        .admin-header p {
-            font-size: 0.85rem;
+        .top-bar .title-box p {
+            font-size: 0.75rem;
             color: #8e93b0;
+            margin-top: 2px;
         }
+        .logout-top-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.6rem 1.2rem;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: 60px;
+            color: #fca5a5;
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: 0.25s;
+            white-space: nowrap;
+        }
+        .logout-top-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+            color: #fff;
+        }
+        .logout-top-btn i { font-size: 0.85rem; }
 
         /* ===== 登入畫面 ===== */
         .login-box {
@@ -52,7 +77,7 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
             text-align: center;
             max-width: 400px;
-            margin: 0 auto;
+            margin: 3rem auto;
         }
         .login-box .lock-icon {
             font-size: 3rem;
@@ -77,9 +102,7 @@
             outline: none;
             transition: border-color 0.2s;
         }
-        .password-input:focus {
-            border-color: #aa4eff;
-        }
+        .password-input:focus { border-color: #aa4eff; }
         .login-btn {
             width: 100%;
             padding: 0.9rem;
@@ -104,32 +127,69 @@
             margin-top: 0.8rem;
             min-height: 20px;
         }
-        .login-hint {
-            font-size: 0.7rem;
-            color: #6a6f8a;
+
+        /* ===== 主選單（選擇要變更的項目） ===== */
+        .main-menu { display: none; }
+        .main-menu.active { display: block; }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
             margin-top: 1rem;
         }
-
-        /* ===== 管理面板 ===== */
-        .panel { display: none; }
-        .panel.active { display: block; }
-
-        .tab-buttons {
+        .menu-card {
+            background: rgba(18, 22, 35, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 1.8rem;
+            padding: 2rem 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            cursor: pointer;
+            transition: 0.25s;
+            text-align: center;
             display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            background: rgba(18, 22, 35, 0.6);
-            padding: 0.5rem;
-            border-radius: 60px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            flex-wrap: wrap;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.8rem;
         }
-        .tab-btn {
-            flex: 1;
-            min-width: 100px;
-            padding: 0.8rem 1rem;
-            background: transparent;
-            border: none;
+        .menu-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(170, 126, 255, 0.5);
+            box-shadow: 0 20px 40px rgba(106, 90, 205, 0.3);
+        }
+        .menu-card .icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, rgba(111, 92, 241, 0.3), rgba(170, 78, 255, 0.3));
+            color: #b7adff;
+        }
+        .menu-card .label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #e0e2f5;
+        }
+        .menu-card .desc {
+            font-size: 0.7rem;
+            color: #6a6f8a;
+        }
+
+        /* ===== 編輯頁面 ===== */
+        .edit-page { display: none; }
+        .edit-page.active { display: block; }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.6rem 1.2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 60px;
             color: #8e93b0;
             font-size: 0.85rem;
@@ -137,14 +197,9 @@
             font-family: inherit;
             cursor: pointer;
             transition: 0.25s;
-            white-space: nowrap;
+            margin-bottom: 1.5rem;
         }
-        .tab-btn.active {
-            background: linear-gradient(135deg, #6f5cf1, #aa4eff);
-            color: white;
-            box-shadow: 0 4px 12px rgba(106, 90, 205, 0.4);
-        }
-        .tab-btn:hover:not(.active) {
+        .back-btn:hover {
             background: rgba(85, 70, 180, 0.3);
             color: #e0e2f5;
         }
@@ -156,10 +211,7 @@
             padding: 2rem;
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-            display: none;
         }
-        .edit-card.active { display: block; }
-
         .edit-card h3 {
             font-size: 1.2rem;
             color: #cdc7ff;
@@ -168,13 +220,9 @@
             align-items: center;
             gap: 10px;
         }
-        .edit-card h3 i {
-            color: #b7adff;
-        }
+        .edit-card h3 i { color: #b7adff; }
 
-        .form-group {
-            margin-bottom: 1.2rem;
-        }
+        .form-group { margin-bottom: 1.2rem; }
         .form-group label {
             display: block;
             font-size: 0.85rem;
@@ -214,10 +262,8 @@
         .form-select option {
             background: #1a1e2e;
             color: #f0f0f5;
-            padding: 0.5rem;
         }
 
-        /* 唯讀欄位（不可修改） */
         .form-input.readonly {
             background: rgba(0, 0, 0, 0.2);
             color: #6a6f8a;
@@ -252,70 +298,31 @@
             transform: scale(1.02);
             box-shadow: 0 8px 20px rgba(34, 197, 94, 0.6);
         }
-        .save-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
 
-        /* 密碼變更區塊 */
-        .password-change-box {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 1.5rem;
-            padding: 1.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            margin-top: 1.5rem;
-        }
-        .password-change-box h4 {
-            font-size: 1rem;
-            color: #cdc7ff;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .password-change-box h4 i {
-            color: #b7adff;
-        }
-        .password-change-box .form-group {
-            margin-bottom: 0.8rem;
-        }
         .change-pwd-btn {
             width: 100%;
-            padding: 0.8rem;
+            padding: 0.9rem;
             background: linear-gradient(135deg, #f59e0b, #d97706);
             border: none;
             border-radius: 60px;
             color: white;
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-weight: 600;
             font-family: inherit;
             cursor: pointer;
             transition: 0.25s;
             box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+            margin-top: 0.5rem;
         }
         .change-pwd-btn:hover {
             transform: scale(1.02);
             box-shadow: 0 8px 20px rgba(245, 158, 11, 0.6);
         }
 
-        .logout-btn {
-            width: 100%;
-            padding: 0.8rem;
-            background: rgba(239, 68, 68, 0.2);
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            border-radius: 60px;
-            color: #fca5a5;
-            font-size: 0.9rem;
-            font-weight: 600;
-            font-family: inherit;
-            cursor: pointer;
-            transition: 0.25s;
-            margin-top: 1rem;
-        }
-        .logout-btn:hover {
-            background: rgba(239, 68, 68, 0.3);
-            color: #fff;
+        .pwd-hint {
+            font-size: 0.7rem;
+            color: #6a6f8a;
+            margin-top: 4px;
         }
 
         .status-msg {
@@ -323,68 +330,91 @@
             font-size: 0.85rem;
             margin-top: 1rem;
             min-height: 20px;
-            transition: color 0.2s;
         }
         .status-msg.success { color: #22c55e; }
         .status-msg.error { color: #ef4444; }
         .status-msg.info { color: #8e93b0; }
 
-        /* 密碼強度提示 */
-        .pwd-hint {
-            font-size: 0.7rem;
-            color: #6a6f8a;
-            margin-top: 4px;
-        }
-
         @media (max-width: 500px) {
-            .tab-btn {
-                font-size: 0.75rem;
-                padding: 0.7rem 0.5rem;
-                min-width: 80px;
-            }
+            .menu-grid { grid-template-columns: 1fr; }
             .edit-card { padding: 1.5rem; }
+            .top-bar .title-box h1 { font-size: 1.2rem; }
         }
     </style>
 </head>
 <body>
 
 <div class="admin-container">
-    <div class="admin-header">
-        <h1>🔧 管理介面</h1>
-        <p>Chan Hyc 秘密基地 · 內容管理系統</p>
+
+    <!-- ===== 頂部標題列（登入後才顯示登出按鈕） ===== -->
+    <div class="top-bar" id="topBar" style="display: none;">
+        <div class="title-box">
+            <h1>🔧 管理介面</h1>
+            <p>Chan Hyc 秘密基地 · 內容管理系統</p>
+        </div>
+        <button class="logout-top-btn" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i> 登出
+        </button>
     </div>
 
-    <!-- 登入畫面 -->
+    <!-- ===== 登入畫面 ===== -->
     <div class="login-box" id="loginBox">
         <div class="lock-icon">🔒</div>
         <h2>請輸入管理密碼</h2>
         <input type="password" class="password-input" id="passwordInput" placeholder="請輸入密碼...">
         <button class="login-btn" id="loginBtn">登 入</button>
         <div class="login-error" id="loginError"></div>
-        <div class="login-hint">預設密碼：hyc0628（可登入後修改）</div>
     </div>
 
-    <!-- 管理面板 -->
-    <div class="panel" id="adminPanel">
-        <div class="tab-buttons">
-            <button class="tab-btn active" data-tab="motto">📜 座右銘</button>
-            <button class="tab-btn" data-tab="info">👤 個人資料</button>
-            <button class="tab-btn" data-tab="cancer">♋ 巨蟹座</button>
-            <button class="tab-btn" data-tab="password">🔑 變更密碼</button>
+    <!-- ===== 主選單（選擇要變更的項目） ===== -->
+    <div class="main-menu" id="mainMenu">
+        <div class="menu-grid">
+            <div class="menu-card" data-target="motto">
+                <div class="icon">📜</div>
+                <div class="label">座右銘</div>
+                <div class="desc">編輯座右銘內容</div>
+            </div>
+            <div class="menu-card" data-target="info">
+                <div class="icon">👤</div>
+                <div class="label">個人資料</div>
+                <div class="desc">編輯學歷、年齡、感情</div>
+            </div>
+            <div class="menu-card" data-target="cancer">
+                <div class="icon">♋</div>
+                <div class="label">巨蟹座</div>
+                <div class="desc">編輯巨蟹座內容</div>
+            </div>
+            <div class="menu-card" data-target="password">
+                <div class="icon">🔑</div>
+                <div class="label">變更密碼</div>
+                <div class="desc">修改管理密碼</div>
+            </div>
         </div>
+        <div class="status-msg info" id="statusMsg"></div>
+    </div>
 
-        <!-- 座右銘 -->
-        <div class="edit-card active" id="card-motto">
+    <!-- ===== 編輯頁面：座右銘 ===== -->
+    <div class="edit-page" id="page-motto">
+        <button class="back-btn" onclick="backToMenu()">
+            <i class="fas fa-arrow-left"></i> 返回選單
+        </button>
+        <div class="edit-card">
             <h3><i class="fas fa-quote-left"></i> 編輯座右銘</h3>
             <div class="form-group">
                 <label>座右銘內容（可換行）</label>
                 <textarea class="form-textarea" id="mottoInput" placeholder="請輸入座右銘..."></textarea>
             </div>
             <button class="save-btn" id="saveMottoBtn">💾 儲存座右銘</button>
+            <div class="status-msg" id="statusMotto"></div>
         </div>
+    </div>
 
-        <!-- 個人資料 -->
-        <div class="edit-card" id="card-info">
+    <!-- ===== 編輯頁面：個人資料 ===== -->
+    <div class="edit-page" id="page-info">
+        <button class="back-btn" onclick="backToMenu()">
+            <i class="fas fa-arrow-left"></i> 返回選單
+        </button>
+        <div class="edit-card">
             <h3><i class="fas fa-id-card"></i> 編輯個人資料</h3>
 
             <div class="form-group">
@@ -392,29 +422,24 @@
                 <input type="text" class="form-input readonly" id="infoLocation" readonly>
                 <div class="readonly-hint"><i class="fas fa-lock"></i> 此欄位固定，無法修改</div>
             </div>
-
             <div class="form-group">
                 <label>🎓 學歷</label>
                 <input type="text" class="form-input" id="infoEducation" placeholder="例如：就讀高中職">
             </div>
-
             <div class="form-group">
                 <label>📅 幾年（不可修改）</label>
                 <input type="text" class="form-input readonly" id="infoYear" readonly>
                 <div class="readonly-hint"><i class="fas fa-lock"></i> 此欄位固定，無法修改</div>
             </div>
-
             <div class="form-group">
                 <label>🎂 生日（不可修改）</label>
                 <input type="text" class="form-input readonly" id="infoBirthday" readonly>
                 <div class="readonly-hint"><i class="fas fa-lock"></i> 此欄位固定，無法修改</div>
             </div>
-
             <div class="form-group">
                 <label>🧒 年齡</label>
                 <input type="text" class="form-input" id="infoAge" placeholder="例如：17歲">
             </div>
-
             <div class="form-group">
                 <label>❤️ 感情狀態（下拉選單）</label>
                 <select class="form-select" id="infoRelationship">
@@ -427,71 +452,65 @@
                     <option value="離婚">離婚</option>
                 </select>
             </div>
-
             <div class="form-group">
                 <label>♋ 星座（不可修改）</label>
                 <input type="text" class="form-input readonly" id="infoZodiac" readonly>
                 <div class="readonly-hint"><i class="fas fa-lock"></i> 此欄位固定，無法修改</div>
             </div>
-
             <div class="form-group">
                 <label>🩸 血型（不可修改）</label>
                 <input type="text" class="form-input readonly" id="infoBlood" readonly>
                 <div class="readonly-hint"><i class="fas fa-lock"></i> 此欄位固定，無法修改</div>
             </div>
-
             <button class="save-btn" id="saveInfoBtn">💾 儲存個人資料</button>
+            <div class="status-msg" id="statusInfo"></div>
         </div>
+    </div>
 
-        <!-- 巨蟹座 -->
-        <div class="edit-card" id="card-cancer">
+    <!-- ===== 編輯頁面：巨蟹座 ===== -->
+    <div class="edit-page" id="page-cancer">
+        <button class="back-btn" onclick="backToMenu()">
+            <i class="fas fa-arrow-left"></i> 返回選單
+        </button>
+        <div class="edit-card">
             <h3><i class="fas fa-crab"></i> 編輯巨蟹座內容</h3>
             <div class="form-group">
                 <label>巨蟹座內容（可換行）</label>
                 <textarea class="form-textarea" id="cancerInput" placeholder="請輸入巨蟹座內容..."></textarea>
             </div>
             <button class="save-btn" id="saveCancerBtn">💾 儲存巨蟹座</button>
+            <div class="status-msg" id="statusCancer"></div>
         </div>
-
-        <!-- 變更密碼 -->
-        <div class="edit-card" id="card-password">
-            <h3><i class="fas fa-key"></i> 變更管理密碼</h3>
-            <div class="password-change-box">
-                <h4><i class="fas fa-lock"></i> 修改登入密碼</h4>
-                <div class="form-group">
-                    <label>目前密碼</label>
-                    <input type="password" class="form-input" id="currentPwd" placeholder="請輸入目前密碼">
-                </div>
-                <div class="form-group">
-                    <label>新密碼</label>
-                    <input type="password" class="form-input" id="newPwd" placeholder="請輸入新密碼">
-                    <div class="pwd-hint">建議 6 個字元以上，包含英文與數字</div>
-                </div>
-                <div class="form-group">
-                    <label>確認新密碼</label>
-                    <input type="password" class="form-input" id="confirmPwd" placeholder="請再次輸入新密碼">
-                </div>
-                <button class="change-pwd-btn" id="changePwdBtn">🔑 變更密碼</button>
-            </div>
-        </div>
-
-        <button class="logout-btn" id="logoutBtn">🚪 登出</button>
-        <div class="status-msg info" id="statusMsg"></div>
     </div>
+
+    <!-- ===== 編輯頁面：變更密碼 ===== -->
+    <div class="edit-page" id="page-password">
+        <button class="back-btn" onclick="backToMenu()">
+            <i class="fas fa-arrow-left"></i> 返回選單
+        </button>
+        <div class="edit-card">
+            <h3><i class="fas fa-key"></i> 變更管理密碼</h3>
+            <div class="form-group">
+                <label>目前密碼</label>
+                <input type="password" class="form-input" id="currentPwd" placeholder="請輸入目前密碼">
+            </div>
+            <div class="form-group">
+                <label>新密碼</label>
+                <input type="password" class="form-input" id="newPwd" placeholder="請輸入新密碼">
+                <div class="pwd-hint">建議 6 個字元以上</div>
+            </div>
+            <div class="form-group">
+                <label>確認新密碼</label>
+                <input type="password" class="form-input" id="confirmPwd" placeholder="請再次輸入新密碼">
+            </div>
+            <button class="change-pwd-btn" id="changePwdBtn">🔑 變更密碼</button>
+            <div class="status-msg" id="statusPassword"></div>
+        </div>
+    </div>
+
 </div>
 
 <script>
-    // ============================================================
-    // 🔑 預設管理密碼（存在 localStorage，可透過管理介面修改）
-    // ============================================================
-    const DEFAULT_PASSWORD = "hyc0628";
-    const PASSWORD_KEY = "hyc_admin_password";
-
-    // 取得目前密碼
-    function getCurrentPassword() {
-        return localStorage.getItem(PASSWORD_KEY) || DEFAULT_PASSWORD;
-    }
-
     // ============================================================
     // Firebase 設定
     // ============================================================
@@ -505,30 +524,57 @@
     const db = firebase.database();
 
     // ============================================================
-    // 頁面控制
+    // 頁面元素
     // ============================================================
+    const topBar = document.getElementById('topBar');
     const loginBox = document.getElementById('loginBox');
-    const adminPanel = document.getElementById('adminPanel');
+    const mainMenu = document.getElementById('mainMenu');
     const passwordInput = document.getElementById('passwordInput');
     const loginBtn = document.getElementById('loginBtn');
     const loginError = document.getElementById('loginError');
     const logoutBtn = document.getElementById('logoutBtn');
-    const statusMsg = document.getElementById('statusMsg');
 
+    // ============================================================
+    // 登入邏輯（密碼從 Firebase 讀取）
+    // ============================================================
     // 檢查是否已登入
     if (sessionStorage.getItem('adminLoggedIn') === 'true') {
-        showAdminPanel();
+        showMainMenu();
     }
 
-    // 登入
-    loginBtn.addEventListener('click', () => {
+    // 登入按鈕
+    loginBtn.addEventListener('click', async () => {
         const pwd = passwordInput.value.trim();
-        if (pwd === getCurrentPassword()) {
-            sessionStorage.setItem('adminLoggedIn', 'true');
-            showAdminPanel();
-        } else {
-            loginError.textContent = '❌ 密碼錯誤，請重新輸入';
-            passwordInput.value = '';
+        if (!pwd) {
+            loginError.textContent = '❌ 請輸入密碼';
+            return;
+        }
+        loginBtn.disabled = true;
+        loginBtn.textContent = '驗證中...';
+        loginError.textContent = '';
+
+        try {
+            const snapshot = await db.ref('admin/password').once('value');
+            const correctPwd = snapshot.val() || 'hyc0628';
+
+            if (pwd === correctPwd) {
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                showMainMenu();
+            } else {
+                loginError.textContent = '❌ 密碼錯誤，請重新輸入';
+                passwordInput.value = '';
+            }
+        } catch (err) {
+            // 如果 Firebase 讀取失敗，使用預設密碼
+            if (pwd === 'hyc0628') {
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                showMainMenu();
+            } else {
+                loginError.textContent = '❌ 密碼錯誤';
+            }
+        } finally {
+            loginBtn.disabled = false;
+            loginBtn.textContent = '登 入';
         }
     });
 
@@ -542,37 +588,39 @@
         location.reload();
     });
 
-    function showAdminPanel() {
+    // 顯示主選單
+    function showMainMenu() {
         loginBox.style.display = 'none';
-        adminPanel.classList.add('active');
+        topBar.style.display = 'flex';
+        mainMenu.classList.add('active');
         loadAllData();
     }
 
     // ============================================================
-    // Tab 切換
+    // 選單點擊 → 進入對應編輯頁
     // ============================================================
-    const tabBtns = document.querySelectorAll('.tab-btn');
-    const editCards = document.querySelectorAll('.edit-card');
-
-    tabBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const tab = btn.dataset.tab;
-            tabBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            editCards.forEach(card => card.classList.remove('active'));
-            document.getElementById('card-' + tab).classList.add('active');
-            // 清除狀態訊息
-            statusMsg.textContent = '';
-            statusMsg.className = 'status-msg info';
+    document.querySelectorAll('.menu-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const target = card.dataset.target;
+            mainMenu.classList.remove('active');
+            document.querySelectorAll('.edit-page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + target).classList.add('active');
         });
     });
+
+    // 返回選單
+    function backToMenu() {
+        document.querySelectorAll('.edit-page').forEach(p => p.classList.remove('active'));
+        mainMenu.classList.add('active');
+        // 清除所有狀態訊息
+        document.querySelectorAll('.status-msg').forEach(el => el.textContent = '');
+    }
+    window.backToMenu = backToMenu;
 
     // ============================================================
     // 載入所有資料
     // ============================================================
     function loadAllData() {
-        showStatus('info', '📥 載入資料中...');
-
         // 載入座右銘
         db.ref('content/motto').once('value').then(snapshot => {
             const data = snapshot.val();
@@ -598,14 +646,11 @@
                 blood: 'Aˉ'
             };
 
-            // 唯讀欄位（固定值）
             document.getElementById('infoLocation').value = info.location || '彰化人';
             document.getElementById('infoYear').value = info.year || '09年';
             document.getElementById('infoBirthday').value = info.birthday || '0628';
             document.getElementById('infoZodiac').value = info.zodiac || '巨蟹座';
             document.getElementById('infoBlood').value = info.blood || 'Aˉ';
-
-            // 可編輯欄位
             document.getElementById('infoEducation').value = info.education || '';
             document.getElementById('infoAge').value = info.age || '';
             document.getElementById('infoRelationship').value = info.relationship || '不透露';
@@ -621,10 +666,6 @@
                     '巨蟹座簡述\n=情感細膩+共感力強+敏感脆弱+表面溫和+情緒海洋+超級顧家+極度念舊+重視陪伴+習慣壓抑不說+愛一個人很深+放不下也說不出口+安全感至上+小事就會胡思亂想+偷偷心軟+外柔內韌+害怕失去+愛一個人就會付出一切=巨蟹座';
             }
         });
-
-        setTimeout(() => {
-            showStatus('success', '✅ 資料載入完成');
-        }, 800);
     }
 
     // ============================================================
@@ -632,46 +673,34 @@
     // ============================================================
     document.getElementById('saveMottoBtn').addEventListener('click', () => {
         const content = document.getElementById('mottoInput').value;
-        showStatus('info', '⏳ 儲存中...');
+        showStatus('statusMotto', 'info', '⏳ 儲存中...');
 
         db.ref('content/motto').set(content)
-            .then(() => {
-                showStatus('success', '✅ 座右銘已儲存並同步到主網頁！');
-            })
-            .catch(err => {
-                showStatus('error', '❌ 儲存失敗：' + err.message);
-            });
+            .then(() => showStatus('statusMotto', 'success', '✅ 座右銘已儲存並同步！'))
+            .catch(err => showStatus('statusMotto', 'error', '❌ 儲存失敗：' + err.message));
     });
 
     // ============================================================
-    // 儲存個人資料（只儲存可編輯的欄位）
+    // 儲存個人資料
     // ============================================================
     document.getElementById('saveInfoBtn').addEventListener('click', () => {
-        // 先讀取現有資料，保留不可修改的欄位
         db.ref('content/profile').once('value').then(snapshot => {
             const existing = snapshot.val() || {};
             const data = {
-                // 不可修改的欄位保持原值
                 location: existing.location || '彰化人',
                 year: existing.year || '09年',
                 birthday: existing.birthday || '0628',
                 zodiac: existing.zodiac || '巨蟹座',
                 blood: existing.blood || 'Aˉ',
-                // 可修改的欄位
                 education: document.getElementById('infoEducation').value,
                 age: document.getElementById('infoAge').value,
                 relationship: document.getElementById('infoRelationship').value
             };
-            showStatus('info', '⏳ 儲存中...');
-
+            showStatus('statusInfo', 'info', '⏳ 儲存中...');
             return db.ref('content/profile').set(data);
         })
-        .then(() => {
-            showStatus('success', '✅ 個人資料已儲存並同步到主網頁！');
-        })
-        .catch(err => {
-            showStatus('error', '❌ 儲存失敗：' + err.message);
-        });
+        .then(() => showStatus('statusInfo', 'success', '✅ 個人資料已儲存並同步！'))
+        .catch(err => showStatus('statusInfo', 'error', '❌ 儲存失敗：' + err.message));
     });
 
     // ============================================================
@@ -679,68 +708,75 @@
     // ============================================================
     document.getElementById('saveCancerBtn').addEventListener('click', () => {
         const content = document.getElementById('cancerInput').value;
-        showStatus('info', '⏳ 儲存中...');
+        showStatus('statusCancer', 'info', '⏳ 儲存中...');
 
         db.ref('content/cancer').set(content)
-            .then(() => {
-                showStatus('success', '✅ 巨蟹座內容已儲存並同步到主網頁！');
-            })
-            .catch(err => {
-                showStatus('error', '❌ 儲存失敗：' + err.message);
-            });
+            .then(() => showStatus('statusCancer', 'success', '✅ 巨蟹座已儲存並同步！'))
+            .catch(err => showStatus('statusCancer', 'error', '❌ 儲存失敗：' + err.message));
     });
 
     // ============================================================
-    // 變更密碼
+    // 變更密碼（存到 Firebase，跨裝置同步）
     // ============================================================
-    document.getElementById('changePwdBtn').addEventListener('click', () => {
+    document.getElementById('changePwdBtn').addEventListener('click', async () => {
         const currentPwd = document.getElementById('currentPwd').value.trim();
         const newPwd = document.getElementById('newPwd').value.trim();
         const confirmPwd = document.getElementById('confirmPwd').value.trim();
 
-        // 驗證
         if (!currentPwd || !newPwd || !confirmPwd) {
-            showStatus('error', '❌ 請填寫所有欄位');
-            return;
-        }
-        if (currentPwd !== getCurrentPassword()) {
-            showStatus('error', '❌ 目前密碼錯誤');
+            showStatus('statusPassword', 'error', '❌ 請填寫所有欄位');
             return;
         }
         if (newPwd.length < 6) {
-            showStatus('error', '❌ 新密碼至少需要 6 個字元');
+            showStatus('statusPassword', 'error', '❌ 新密碼至少需要 6 個字元');
             return;
         }
         if (newPwd !== confirmPwd) {
-            showStatus('error', '❌ 兩次輸入的新密碼不一致');
+            showStatus('statusPassword', 'error', '❌ 兩次輸入的新密碼不一致');
             return;
         }
         if (newPwd === currentPwd) {
-            showStatus('error', '❌ 新密碼不能與目前密碼相同');
+            showStatus('statusPassword', 'error', '❌ 新密碼不能與目前密碼相同');
             return;
         }
 
-        // 儲存新密碼
-        localStorage.setItem(PASSWORD_KEY, newPwd);
-        showStatus('success', '✅ 密碼已成功變更！下次登入請使用新密碼');
+        showStatus('statusPassword', 'info', '⏳ 驗證中...');
 
-        // 清空欄位
-        document.getElementById('currentPwd').value = '';
-        document.getElementById('newPwd').value = '';
-        document.getElementById('confirmPwd').value = '';
+        try {
+            // 驗證目前密碼
+            const snapshot = await db.ref('admin/password').once('value');
+            const correctPwd = snapshot.val() || 'hyc0628';
+
+            if (currentPwd !== correctPwd) {
+                showStatus('statusPassword', 'error', '❌ 目前密碼錯誤');
+                return;
+            }
+
+            // 儲存新密碼到 Firebase
+            await db.ref('admin/password').set(newPwd);
+            showStatus('statusPassword', 'success', '✅ 密碼已成功變更！下次登入請使用新密碼');
+
+            document.getElementById('currentPwd').value = '';
+            document.getElementById('newPwd').value = '';
+            document.getElementById('confirmPwd').value = '';
+        } catch (err) {
+            showStatus('statusPassword', 'error', '❌ 變更失敗：' + err.message);
+        }
     });
 
     // ============================================================
     // 狀態訊息
     // ============================================================
-    let statusTimer = null;
-    function showStatus(type, msg) {
-        statusMsg.className = 'status-msg ' + type;
-        statusMsg.textContent = msg;
-        if (statusTimer) clearTimeout(statusTimer);
+    const statusTimers = {};
+    function showStatus(elementId, type, msg) {
+        const el = document.getElementById(elementId);
+        if (!el) return;
+        el.className = 'status-msg ' + type;
+        el.textContent = msg;
+        if (statusTimers[elementId]) clearTimeout(statusTimers[elementId]);
         if (type === 'success' || type === 'error') {
-            statusTimer = setTimeout(() => {
-                statusMsg.textContent = '';
+            statusTimers[elementId] = setTimeout(() => {
+                el.textContent = '';
             }, 4000);
         }
     }
