@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chan Hyc · 管理介面</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: radial-gradient(circle at 10% 20%, #0b0d17, #03030a);
+            font-family: 'Inter', system-ui, sans-serif;
+            color: #f0f0f5;
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
+        }
+
+        .admin-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .admin-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .admin-header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(115deg, #FFF, #cdc7ff);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        .admin-header p {
+            font-size: 0.85rem;
+            color: #8e93b0;
+        }
+
+        /* ===== 登入畫面 ===== */
+        .login-box {
+            background: rgba(18, 22, 35, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 2rem;
+            padding: 2.5rem 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .login-box .lock-icon {
+            font-size: 3rem;
+            color: #b7adff;
+            margin-bottom: 1rem;
+        }
+        .login-box h2 {
+            font-size: 1.3rem;
+            color: #e0e2f5;
+            margin-bottom: 1.5rem;
+        }
+        .password-input {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 60px;
+            color: #f0f0f5;
+            font-size: 1rem;
+            font-family: inherit;
+            margin-bottom: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .password-input:focus {
+            border-color: #aa4eff;
+        }
+        .login-btn {
+            width: 100%;
+            padding: 0.9rem;
+            background: linear-gradient(135deg, #6f5cf1, #aa4eff);
+            border: none;
+            border-radius: 60px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: 0.25s;
+            box-shadow: 0 4px 12px rgba(106, 90, 205, 0.4);
+        }
+        .login-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(106, 90, 205, 0.6);
+        }
+        .login-error {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 0.8rem;
+            min-height: 20px;
+        }
+
+        /* ===== 管理面板 ===== */
+        .panel { display: none; }
+        .panel.active { display: block; }
+
+        .tab-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            background: rgba(18, 22, 35, 0.6);
+            padding: 0.5rem;
+            border-radius: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            background: transparent;
+            border: none;
+            border-radius: 60px;
+            color: #8e93b0;
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+        .tab-btn.active {
+            background: linear-gradient(135deg, #6f5cf1, #aa4eff);
+            color: white;
+            box-shadow: 0 4px 12px rgba(106, 90, 205, 0.4);
+        }
+        .tab-btn:hover:not(.active) {
+            background: rgba(85, 70, 180, 0.3);
+            color: #e0e2f5;
+        }
+
+        .edit-card {
+            background: rgba(18, 22, 35, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 2rem;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+        .edit-card.active { display: block; }
+
+        .edit-card h3 {
+            font-size: 1.2rem;
+            color: #cdc7ff;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .edit-card h3 i {
+            color: #b7adff;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: #9f9fcf;
+            margin-bottom: 0.4rem;
+            font-weight: 500;
+        }
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            color: #f0f0f5;
+            font-size: 0.95rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-input:focus, .form-textarea:focus {
+            border-color: #aa4eff;
+        }
+        .form-textarea {
+            min-height: 200px;
+            resize: vertical;
+            line-height: 1.7;
+        }
+
+        .save-btn {
+            width: 100%;
+            padding: 0.9rem;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            border: none;
+            border-radius: 60px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: 0.25s;
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+            margin-top: 0.5rem;
+        }
+        .save-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.6);
+        }
+        .save-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: 60px;
+            color: #fca5a5;
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: 0.25s;
+            margin-top: 1rem;
+        }
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+            color: #fff;
+        }
+
+        .status-msg {
+            text-align: center;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            min-height: 20px;
+            transition: color 0.2s;
+        }
+        .status-msg.success { color: #22c55e; }
+        .status-msg.error { color: #ef4444; }
+        .status-msg.info { color: #8e93b0; }
+    </style>
+</head>
+<body>
+
+<div class="admin-container">
+    <div class="admin-header">
+        <h1>🔧 管理介面</h1>
+        <p>Chan Hyc 秘密基地 · 內容管理系統</p>
+    </div>
+
+    <!-- 登入畫面 -->
+    <div class="login-box" id="loginBox">
+        <div class="lock-icon">🔒</div>
+        <h2>請輸入管理密碼</h2>
+        <input type="password" class="password-input" id="passwordInput" placeholder="請輸入密碼...">
+        <button class="login-btn" id="loginBtn">登 入</button>
+        <div class="login-error" id="loginError"></div>
+    </div>
+
+    <!-- 管理面板 -->
+    <div class="panel" id="adminPanel">
+        <div class="tab-buttons">
+            <button class="tab-btn active" data-tab="motto">📜 座右銘</button>
+            <button class="tab-btn" data-tab="info">👤 個人資料</button>
+            <button class="tab-btn" data-tab="cancer">♋ 巨蟹座</button>
+        </div>
+
+        <!-- 座右銘 -->
+        <div class="edit-card active" id="card-motto">
+            <h3><i class="fas fa-quote-left"></i> 編輯座右銘</h3>
+            <div class="form-group">
+                <label>座右銘內容（可換行）</label>
+                <textarea class="form-textarea" id="mottoInput" placeholder="請輸入座右銘..."></textarea>
+            </div>
+            <button class="save-btn" id="saveMottoBtn">💾 儲存座右銘</button>
+        </div>
+
+        <!-- 個人資料 -->
+        <div class="edit-card" id="card-info">
+            <h3><i class="fas fa-id-card"></i> 編輯個人資料</h3>
+            <div class="form-group">
+                <label>📍 哪裡人</label>
+                <input type="text" class="form-input" id="infoLocation" placeholder="例如：彰化人">
+            </div>
+            <div class="form-group">
+                <label>🎓 學歷</label>
+                <input type="text" class="form-input" id="infoEducation" placeholder="例如：就讀高中職">
+            </div>
+            <div class="form-group">
+                <label>📅 幾年</label>
+                <input type="text" class="form-input" id="infoYear" placeholder="例如：09年">
+            </div>
+            <div class="form-group">
+                <label>🎂 生日</label>
+                <input type="text" class="form-input" id="infoBirthday" placeholder="例如：0628">
+            </div>
+            <div class="form-group">
+                <label>🧒 年齡</label>
+                <input type="text" class="form-input" id="infoAge" placeholder="例如：17歲">
+            </div>
+            <div class="form-group">
+                <label>❤️ 感情</label>
+                <input type="text" class="form-input" id="infoRelationship" placeholder="例如：不方便透露">
+            </div>
+            <div class="form-group">
+                <label>♋ 星座</label>
+                <input type="text" class="form-input" id="infoZodiac" placeholder="例如：巨蟹座">
+            </div>
+            <div class="form-group">
+                <label>🩸 血型</label>
+                <input type="text" class="form-input" id="infoBlood" placeholder="例如：Aˉ">
+            </div>
+            <button class="save-btn" id="saveInfoBtn">💾 儲存個人資料</button>
+        </div>
+
+        <!-- 巨蟹座 -->
+        <div class="edit-card" id="card-cancer">
+            <h3><i class="fas fa-crab"></i> 編輯巨蟹座內容</h3>
+            <div class="form-group">
+                <label>巨蟹座內容（可換行）</label>
+                <textarea class="form-textarea" id="cancerInput" placeholder="請輸入巨蟹座內容..."></textarea>
+            </div>
+            <button class="save-btn" id="saveCancerBtn">💾 儲存巨蟹座</button>
+        </div>
+
+        <button class="logout-btn" id="logoutBtn">🚪 登出</button>
+        <div class="status-msg info" id="statusMsg"></div>
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // 🔑 管理密碼（請自行修改為您的密碼）
+    // ============================================================
+    const ADMIN_PASSWORD = "hyc0628";
+
+    // ============================================================
+    // Firebase 設定
+    // ============================================================
+    const firebaseConfig = {
+        databaseURL: "https://mehyc-7eabb-default-rtdb.asia-southeast1.firebasedatabase.app/"
+    };
+
+    // 初始化 Firebase
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
+
+    // ============================================================
+    // 頁面控制
+    // ============================================================
+    const loginBox = document.getElementById('loginBox');
+    const adminPanel = document.getElementById('adminPanel');
+    const passwordInput = document.getElementById('passwordInput');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginError = document.getElementById('loginError');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const statusMsg = document.getElementById('statusMsg');
+
+    // 檢查是否已登入（用 sessionStorage 記住登入狀態）
+    if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+        showAdminPanel();
+    }
+
+    // 登入
+    loginBtn.addEventListener('click', () => {
+        const pwd = passwordInput.value.trim();
+        if (pwd === ADMIN_PASSWORD) {
+            sessionStorage.setItem('adminLoggedIn', 'true');
+            showAdminPanel();
+        } else {
+            loginError.textContent = '❌ 密碼錯誤，請重新輸入';
+            passwordInput.value = '';
+        }
+    });
+
+    // Enter 鍵登入
+    passwordInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') loginBtn.click();
+    });
+
+    // 登出
+    logoutBtn.addEventListener('click', () => {
+        sessionStorage.removeItem('adminLoggedIn');
+        location.reload();
+    });
+
+    function showAdminPanel() {
+        loginBox.style.display = 'none';
+        adminPanel.classList.add('active');
+        loadAllData();
+    }
+
+    // ============================================================
+    // Tab 切換
+    // ============================================================
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const editCards = document.querySelectorAll('.edit-card');
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tab = btn.dataset.tab;
+            tabBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            editCards.forEach(card => card.classList.remove('active'));
+            document.getElementById('card-' + tab).classList.add('active');
+        });
+    });
+
+    // ============================================================
+    // 載入所有資料
+    // ============================================================
+    function loadAllData() {
+        showStatus('info', '📥 載入資料中...');
+
+        // 載入座右銘
+        db.ref('content/motto').once('value').then(snapshot => {
+            const data = snapshot.val();
+            if (data) {
+                document.getElementById('mottoInput').value = data;
+            } else {
+                // 若資料庫沒有資料，載入預設值
+                document.getElementById('mottoInput').value =
+                    '珍惜當下! 不留遺憾\n把握當下每一分每一秒\n錯過了僅可當回憶\n人生這道題\n無論怎麼選都會有遺憾\n聚散離合本就是人生常態\n不要被女人左右\n要上下左右都是女人';
+            }
+        });
+
+        // 載入個人資料
+        db.ref('content/profile').once('value').then(snapshot => {
+            const data = snapshot.val();
+            if (data) {
+                document.getElementById('infoLocation').value = data.location || '';
+                document.getElementById('infoEducation').value = data.education || '';
+                document.getElementById('infoYear').value = data.year || '';
+                document.getElementById('infoBirthday').value = data.birthday || '';
+                document.getElementById('infoAge').value = data.age || '';
+                document.getElementById('infoRelationship').value = data.relationship || '';
+                document.getElementById('infoZodiac').value = data.zodiac || '';
+                document.getElementById('infoBlood').value = data.blood || '';
+            } else {
+                // 預設值
+                document.getElementById('infoLocation').value = '彰化人';
+                document.getElementById('infoEducation').value = '就讀高中職';
+                document.getElementById('infoYear').value = '09年';
+                document.getElementById('infoBirthday').value = '0628';
+                document.getElementById('infoAge').value = '17歲';
+                document.getElementById('infoRelationship').value = '不方便透露';
+                document.getElementById('infoZodiac').value = '巨蟹座';
+                document.getElementById('infoBlood').value = 'Aˉ';
+            }
+        });
+
+        // 載入巨蟹座
+        db.ref('content/cancer').once('value').then(snapshot => {
+            const data = snapshot.val();
+            if (data) {
+                document.getElementById('cancerInput').value = data;
+            } else {
+                document.getElementById('cancerInput').value =
+                    '巨蟹座簡述\n=情感細膩+共感力強+敏感脆弱+表面溫和+情緒海洋+超級顧家+極度念舊+重視陪伴+習慣壓抑不說+愛一個人很深+放不下也說不出口+安全感至上+小事就會胡思亂想+偷偷心軟+外柔內韌+害怕失去+愛一個人就會付出一切=巨蟹座';
+            }
+        });
+
+        setTimeout(() => {
+            showStatus('success', '✅ 資料載入完成');
+        }, 800);
+    }
+
+    // ============================================================
+    // 儲存座右銘
+    // ============================================================
+    document.getElementById('saveMottoBtn').addEventListener('click', () => {
+        const content = document.getElementById('mottoInput').value;
+        showStatus('info', '⏳ 儲存中...');
+
+        db.ref('content/motto').set(content)
+            .then(() => {
+                showStatus('success', '✅ 座右銘已儲存並同步到主網頁！');
+            })
+            .catch(err => {
+                showStatus('error', '❌ 儲存失敗：' + err.message);
+            });
+    });
+
+    // ============================================================
+    // 儲存個人資料
+    // ============================================================
+    document.getElementById('saveInfoBtn').addEventListener('click', () => {
+        const data = {
+            location: document.getElementById('infoLocation').value,
+            education: document.getElementById('infoEducation').value,
+            year: document.getElementById('infoYear').value,
+            birthday: document.getElementById('infoBirthday').value,
+            age: document.getElementById('infoAge').value,
+            relationship: document.getElementById('infoRelationship').value,
+            zodiac: document.getElementById('infoZodiac').value,
+            blood: document.getElementById('infoBlood').value
+        };
+        showStatus('info', '⏳ 儲存中...');
+
+        db.ref('content/profile').set(data)
+            .then(() => {
+                showStatus('success', '✅ 個人資料已儲存並同步到主網頁！');
+            })
+            .catch(err => {
+                showStatus('error', '❌ 儲存失敗：' + err.message);
+            });
+    });
+
+    // ============================================================
+    // 儲存巨蟹座
+    // ============================================================
+    document.getElementById('saveCancerBtn').addEventListener('click', () => {
+        const content = document.getElementById('cancerInput').value;
+        showStatus('info', '⏳ 儲存中...');
+
+        db.ref('content/cancer').set(content)
+            .then(() => {
+                showStatus('success', '✅ 巨蟹座內容已儲存並同步到主網頁！');
+            })
+            .catch(err => {
+                showStatus('error', '❌ 儲存失敗：' + err.message);
+            });
+    });
+
+    // ============================================================
+    // 狀態訊息
+    // ============================================================
+    let statusTimer = null;
+    function showStatus(type, msg) {
+        statusMsg.className = 'status-msg ' + type;
+        statusMsg.textContent = msg;
+        if (statusTimer) clearTimeout(statusTimer);
+        if (type === 'success' || type === 'error') {
+            statusTimer = setTimeout(() => {
+                statusMsg.textContent = '';
+            }, 4000);
+        }
+    }
+</script>
+</body>
+</html>
