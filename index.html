@@ -133,7 +133,7 @@
             box-shadow: 0 25px 40px rgba(0, 0, 0, 0.6);
             animation: fadeInScale 0.3s ease-out; position: relative;
         }
-        .info-card { max-width: 380px; }
+        .info-card { max-width: 400px; }
         .motto-card { max-width: 420px; }
         .cancer-card {
             background: rgba(18, 22, 35, 0.95); backdrop-filter: blur(20px);
@@ -493,6 +493,7 @@
         <div class="info-content" id="infoContent">
             <span class="label">📍 哪裡人：</span><span class="value">彰化人</span><br>
             <span class="label">🎓 學歷：</span><span class="value">就讀高中職</span><br>
+            <span class="label">📜 證照：</span><span class="value">丙級電腦軟體應用</span><br>
             <span class="label">📅 幾年：</span><span class="value">09年</span><br>
             <span class="label">🎂 生日：</span><span class="value">0628</span><br>
             <span class="label">🧒 年齡：</span><span class="value">17歲</span><br>
@@ -623,6 +624,7 @@
                     infoContent.innerHTML = `
                         <span class="label">📍 哪裡人：</span><span class="value">${data.location || ''}</span><br>
                         <span class="label">🎓 學歷：</span><span class="value">${data.education || ''}</span><br>
+                        <span class="label">📜 證照：</span><span class="value">${data.certificate || '丙級電腦軟體應用'}</span><br>
                         <span class="label">📅 幾年：</span><span class="value">${data.year || ''}</span><br>
                         <span class="label">🎂 生日：</span><span class="value">${data.birthday || ''}</span><br>
                         <span class="label">🧒 年齡：</span><span class="value">${data.age || ''}</span><br>
@@ -1090,7 +1092,7 @@
         if (btns[5]) btns[5].addEventListener('click', () => showToast('🎵 追蹤抖音 TikTok · 精彩短影音'));
     }
 
-    console.log('✅ Chan Hyc 秘密基地已載入（含 Firebase 內容管理）');
+    console.log('✅ Chan Hyc 秘密基地已載入（個人資料已新增證照欄位）');
 </script>
 </body>
 </html>
