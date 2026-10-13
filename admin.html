@@ -104,6 +104,11 @@
             margin-top: 0.8rem;
             min-height: 20px;
         }
+        .login-hint {
+            font-size: 0.7rem;
+            color: #6a6f8a;
+            margin-top: 1rem;
+        }
 
         /* ===== 管理面板 ===== */
         .panel { display: none; }
@@ -117,19 +122,22 @@
             padding: 0.5rem;
             border-radius: 60px;
             border: 1px solid rgba(255, 255, 255, 0.08);
+            flex-wrap: wrap;
         }
         .tab-btn {
             flex: 1;
+            min-width: 100px;
             padding: 0.8rem 1rem;
             background: transparent;
             border: none;
             border-radius: 60px;
             color: #8e93b0;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
             font-family: inherit;
             cursor: pointer;
             transition: 0.25s;
+            white-space: nowrap;
         }
         .tab-btn.active {
             background: linear-gradient(135deg, #6f5cf1, #aa4eff);
@@ -174,7 +182,7 @@
             margin-bottom: 0.4rem;
             font-weight: 500;
         }
-        .form-input, .form-textarea {
+        .form-input, .form-textarea, .form-select {
             width: 100%;
             padding: 0.8rem 1rem;
             background: rgba(0, 0, 0, 0.4);
@@ -186,13 +194,43 @@
             outline: none;
             transition: border-color 0.2s;
         }
-        .form-input:focus, .form-textarea:focus {
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
             border-color: #aa4eff;
         }
         .form-textarea {
             min-height: 200px;
             resize: vertical;
             line-height: 1.7;
+        }
+        .form-select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238e93b0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+            padding-right: 2.5rem;
+        }
+        .form-select option {
+            background: #1a1e2e;
+            color: #f0f0f5;
+            padding: 0.5rem;
+        }
+
+        /* 唯讀欄位（不可修改） */
+        .form-input.readonly {
+            background: rgba(0, 0, 0, 0.2);
+            color: #6a6f8a;
+            cursor: not-allowed;
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+        .readonly-hint {
+            font-size: 0.7rem;
+            color: #6a6f8a;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .save-btn {
@@ -218,6 +256,47 @@
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
+        }
+
+        /* 密碼變更區塊 */
+        .password-change-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            margin-top: 1.5rem;
+        }
+        .password-change-box h4 {
+            font-size: 1rem;
+            color: #cdc7ff;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .password-change-box h4 i {
+            color: #b7adff;
+        }
+        .password-change-box .form-group {
+            margin-bottom: 0.8rem;
+        }
+        .change-pwd-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border: none;
+            border-radius: 60px;
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: 0.25s;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+        .change-pwd-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.6);
         }
 
         .logout-btn {
@@ -249,6 +328,22 @@
         .status-msg.success { color: #22c55e; }
         .status-msg.error { color: #ef4444; }
         .status-msg.info { color: #8e93b0; }
+
+        /* 密碼強度提示 */
+        .pwd-hint {
+            font-size: 0.7rem;
+            color: #6a6f8a;
+            margin-top: 4px;
+        }
+
+        @media (max-width: 500px) {
+            .tab-btn {
+                font-size: 0.75rem;
+                padding: 0.7rem 0.5rem;
+                min-width: 80px;
+            }
+            .edit-card { padding: 1.5rem; }
+        }
     </style>
 </head>
 <body>
@@ -266,6 +361,7 @@
         <input type="password" class="password-input" id="passwordInput" placeholder="請輸入密碼...">
         <button class="login-btn" id="loginBtn">登 入</button>
         <div class="login-error" id="loginError"></div>
+        <div class="login-hint">預設密碼：hyc0628（可登入後修改）</div>
     </div>
 
     <!-- 管理面板 -->
@@ -274,6 +370,7 @@
             <button class="tab-btn active" data-tab="motto">📜 座右銘</button>
             <button class="tab-btn" data-tab="info">👤 個人資料</button>
             <button class="tab-btn" data-tab="cancer">♋ 巨蟹座</button>
+            <button class="tab-btn" data-tab="password">🔑 變更密碼</button>
         </div>
 
         <!-- 座右銘 -->
@@ -289,38 +386,60 @@
         <!-- 個人資料 -->
         <div class="edit-card" id="card-info">
             <h3><i class="fas fa-id-card"></i> 編輯個人資料</h3>
+
             <div class="form-group">
-                <label>📍 哪裡人</label>
-                <input type="text" class="form-input" id="infoLocation" placeholder="例如：彰化人">
+                <label>📍 哪裡人（不可修改）</label>
+                <input type="text" class="form-input readonly" id="infoLocation" readonly>
+                <div class="readonly-hint"><i class="fas fa-lock"></i> 此欄位固定，無法修改</div>
             </div>
+
             <div class="form-group">
                 <label>🎓 學歷</label>
                 <input type="text" class="form-input" id="infoEducation" placeholder="例如：就讀高中職">
             </div>
+
             <div class="form-group">
-                <label>📅 幾年</label>
-                <input type="text" class="form-input" id="infoYear" placeholder="例如：09年">
+                <label>📅 幾年（不可修改）</label>
+                <input type="text" class="form-input readonly" id="infoYear" readonly>
+                <div class="readonly-hint"><i class="fas fa-lock"></i> 此欄位固定，無法修改</div>
             </div>
+
             <div class="form-group">
-                <label>🎂 生日</label>
-                <input type="text" class="form-input" id="infoBirthday" placeholder="例如：0628">
+                <label>🎂 生日（不可修改）</label>
+                <input type="text" class="form-input readonly" id="infoBirthday" readonly>
+                <div class="readonly-hint"><i class="fas fa-lock"></i> 此欄位固定，無法修改</div>
             </div>
+
             <div class="form-group">
                 <label>🧒 年齡</label>
                 <input type="text" class="form-input" id="infoAge" placeholder="例如：17歲">
             </div>
+
             <div class="form-group">
-                <label>❤️ 感情</label>
-                <input type="text" class="form-input" id="infoRelationship" placeholder="例如：不方便透露">
+                <label>❤️ 感情狀態（下拉選單）</label>
+                <select class="form-select" id="infoRelationship">
+                    <option value="單身">單身</option>
+                    <option value="穩定交往中">穩定交往中</option>
+                    <option value="不透露">不透露</option>
+                    <option value="有喜歡的人">有喜歡的人</option>
+                    <option value="已訂婚">已訂婚</option>
+                    <option value="已婚">已婚</option>
+                    <option value="離婚">離婚</option>
+                </select>
             </div>
+
             <div class="form-group">
-                <label>♋ 星座</label>
-                <input type="text" class="form-input" id="infoZodiac" placeholder="例如：巨蟹座">
+                <label>♋ 星座（不可修改）</label>
+                <input type="text" class="form-input readonly" id="infoZodiac" readonly>
+                <div class="readonly-hint"><i class="fas fa-lock"></i> 此欄位固定，無法修改</div>
             </div>
+
             <div class="form-group">
-                <label>🩸 血型</label>
-                <input type="text" class="form-input" id="infoBlood" placeholder="例如：Aˉ">
+                <label>🩸 血型（不可修改）</label>
+                <input type="text" class="form-input readonly" id="infoBlood" readonly>
+                <div class="readonly-hint"><i class="fas fa-lock"></i> 此欄位固定，無法修改</div>
             </div>
+
             <button class="save-btn" id="saveInfoBtn">💾 儲存個人資料</button>
         </div>
 
@@ -334,6 +453,28 @@
             <button class="save-btn" id="saveCancerBtn">💾 儲存巨蟹座</button>
         </div>
 
+        <!-- 變更密碼 -->
+        <div class="edit-card" id="card-password">
+            <h3><i class="fas fa-key"></i> 變更管理密碼</h3>
+            <div class="password-change-box">
+                <h4><i class="fas fa-lock"></i> 修改登入密碼</h4>
+                <div class="form-group">
+                    <label>目前密碼</label>
+                    <input type="password" class="form-input" id="currentPwd" placeholder="請輸入目前密碼">
+                </div>
+                <div class="form-group">
+                    <label>新密碼</label>
+                    <input type="password" class="form-input" id="newPwd" placeholder="請輸入新密碼">
+                    <div class="pwd-hint">建議 6 個字元以上，包含英文與數字</div>
+                </div>
+                <div class="form-group">
+                    <label>確認新密碼</label>
+                    <input type="password" class="form-input" id="confirmPwd" placeholder="請再次輸入新密碼">
+                </div>
+                <button class="change-pwd-btn" id="changePwdBtn">🔑 變更密碼</button>
+            </div>
+        </div>
+
         <button class="logout-btn" id="logoutBtn">🚪 登出</button>
         <div class="status-msg info" id="statusMsg"></div>
     </div>
@@ -341,9 +482,15 @@
 
 <script>
     // ============================================================
-    // 🔑 管理密碼（請自行修改為您的密碼）
+    // 🔑 預設管理密碼（存在 localStorage，可透過管理介面修改）
     // ============================================================
-    const ADMIN_PASSWORD = "hyc0628";
+    const DEFAULT_PASSWORD = "hyc0628";
+    const PASSWORD_KEY = "hyc_admin_password";
+
+    // 取得目前密碼
+    function getCurrentPassword() {
+        return localStorage.getItem(PASSWORD_KEY) || DEFAULT_PASSWORD;
+    }
 
     // ============================================================
     // Firebase 設定
@@ -352,7 +499,6 @@
         databaseURL: "https://mehyc-7eabb-default-rtdb.asia-southeast1.firebasedatabase.app/"
     };
 
-    // 初始化 Firebase
     if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
     }
@@ -369,7 +515,7 @@
     const logoutBtn = document.getElementById('logoutBtn');
     const statusMsg = document.getElementById('statusMsg');
 
-    // 檢查是否已登入（用 sessionStorage 記住登入狀態）
+    // 檢查是否已登入
     if (sessionStorage.getItem('adminLoggedIn') === 'true') {
         showAdminPanel();
     }
@@ -377,7 +523,7 @@
     // 登入
     loginBtn.addEventListener('click', () => {
         const pwd = passwordInput.value.trim();
-        if (pwd === ADMIN_PASSWORD) {
+        if (pwd === getCurrentPassword()) {
             sessionStorage.setItem('adminLoggedIn', 'true');
             showAdminPanel();
         } else {
@@ -386,7 +532,6 @@
         }
     });
 
-    // Enter 鍵登入
     passwordInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') loginBtn.click();
     });
@@ -416,6 +561,9 @@
             btn.classList.add('active');
             editCards.forEach(card => card.classList.remove('active'));
             document.getElementById('card-' + tab).classList.add('active');
+            // 清除狀態訊息
+            statusMsg.textContent = '';
+            statusMsg.className = 'status-msg info';
         });
     });
 
@@ -431,7 +579,6 @@
             if (data) {
                 document.getElementById('mottoInput').value = data;
             } else {
-                // 若資料庫沒有資料，載入預設值
                 document.getElementById('mottoInput').value =
                     '珍惜當下! 不留遺憾\n把握當下每一分每一秒\n錯過了僅可當回憶\n人生這道題\n無論怎麼選都會有遺憾\n聚散離合本就是人生常態\n不要被女人左右\n要上下左右都是女人';
             }
@@ -440,26 +587,28 @@
         // 載入個人資料
         db.ref('content/profile').once('value').then(snapshot => {
             const data = snapshot.val();
-            if (data) {
-                document.getElementById('infoLocation').value = data.location || '';
-                document.getElementById('infoEducation').value = data.education || '';
-                document.getElementById('infoYear').value = data.year || '';
-                document.getElementById('infoBirthday').value = data.birthday || '';
-                document.getElementById('infoAge').value = data.age || '';
-                document.getElementById('infoRelationship').value = data.relationship || '';
-                document.getElementById('infoZodiac').value = data.zodiac || '';
-                document.getElementById('infoBlood').value = data.blood || '';
-            } else {
-                // 預設值
-                document.getElementById('infoLocation').value = '彰化人';
-                document.getElementById('infoEducation').value = '就讀高中職';
-                document.getElementById('infoYear').value = '09年';
-                document.getElementById('infoBirthday').value = '0628';
-                document.getElementById('infoAge').value = '17歲';
-                document.getElementById('infoRelationship').value = '不方便透露';
-                document.getElementById('infoZodiac').value = '巨蟹座';
-                document.getElementById('infoBlood').value = 'Aˉ';
-            }
+            const info = data || {
+                location: '彰化人',
+                education: '就讀高中職',
+                year: '09年',
+                birthday: '0628',
+                age: '17歲',
+                relationship: '不透露',
+                zodiac: '巨蟹座',
+                blood: 'Aˉ'
+            };
+
+            // 唯讀欄位（固定值）
+            document.getElementById('infoLocation').value = info.location || '彰化人';
+            document.getElementById('infoYear').value = info.year || '09年';
+            document.getElementById('infoBirthday').value = info.birthday || '0628';
+            document.getElementById('infoZodiac').value = info.zodiac || '巨蟹座';
+            document.getElementById('infoBlood').value = info.blood || 'Aˉ';
+
+            // 可編輯欄位
+            document.getElementById('infoEducation').value = info.education || '';
+            document.getElementById('infoAge').value = info.age || '';
+            document.getElementById('infoRelationship').value = info.relationship || '不透露';
         });
 
         // 載入巨蟹座
@@ -495,28 +644,34 @@
     });
 
     // ============================================================
-    // 儲存個人資料
+    // 儲存個人資料（只儲存可編輯的欄位）
     // ============================================================
     document.getElementById('saveInfoBtn').addEventListener('click', () => {
-        const data = {
-            location: document.getElementById('infoLocation').value,
-            education: document.getElementById('infoEducation').value,
-            year: document.getElementById('infoYear').value,
-            birthday: document.getElementById('infoBirthday').value,
-            age: document.getElementById('infoAge').value,
-            relationship: document.getElementById('infoRelationship').value,
-            zodiac: document.getElementById('infoZodiac').value,
-            blood: document.getElementById('infoBlood').value
-        };
-        showStatus('info', '⏳ 儲存中...');
+        // 先讀取現有資料，保留不可修改的欄位
+        db.ref('content/profile').once('value').then(snapshot => {
+            const existing = snapshot.val() || {};
+            const data = {
+                // 不可修改的欄位保持原值
+                location: existing.location || '彰化人',
+                year: existing.year || '09年',
+                birthday: existing.birthday || '0628',
+                zodiac: existing.zodiac || '巨蟹座',
+                blood: existing.blood || 'Aˉ',
+                // 可修改的欄位
+                education: document.getElementById('infoEducation').value,
+                age: document.getElementById('infoAge').value,
+                relationship: document.getElementById('infoRelationship').value
+            };
+            showStatus('info', '⏳ 儲存中...');
 
-        db.ref('content/profile').set(data)
-            .then(() => {
-                showStatus('success', '✅ 個人資料已儲存並同步到主網頁！');
-            })
-            .catch(err => {
-                showStatus('error', '❌ 儲存失敗：' + err.message);
-            });
+            return db.ref('content/profile').set(data);
+        })
+        .then(() => {
+            showStatus('success', '✅ 個人資料已儲存並同步到主網頁！');
+        })
+        .catch(err => {
+            showStatus('error', '❌ 儲存失敗：' + err.message);
+        });
     });
 
     // ============================================================
@@ -533,6 +688,46 @@
             .catch(err => {
                 showStatus('error', '❌ 儲存失敗：' + err.message);
             });
+    });
+
+    // ============================================================
+    // 變更密碼
+    // ============================================================
+    document.getElementById('changePwdBtn').addEventListener('click', () => {
+        const currentPwd = document.getElementById('currentPwd').value.trim();
+        const newPwd = document.getElementById('newPwd').value.trim();
+        const confirmPwd = document.getElementById('confirmPwd').value.trim();
+
+        // 驗證
+        if (!currentPwd || !newPwd || !confirmPwd) {
+            showStatus('error', '❌ 請填寫所有欄位');
+            return;
+        }
+        if (currentPwd !== getCurrentPassword()) {
+            showStatus('error', '❌ 目前密碼錯誤');
+            return;
+        }
+        if (newPwd.length < 6) {
+            showStatus('error', '❌ 新密碼至少需要 6 個字元');
+            return;
+        }
+        if (newPwd !== confirmPwd) {
+            showStatus('error', '❌ 兩次輸入的新密碼不一致');
+            return;
+        }
+        if (newPwd === currentPwd) {
+            showStatus('error', '❌ 新密碼不能與目前密碼相同');
+            return;
+        }
+
+        // 儲存新密碼
+        localStorage.setItem(PASSWORD_KEY, newPwd);
+        showStatus('success', '✅ 密碼已成功變更！下次登入請使用新密碼');
+
+        // 清空欄位
+        document.getElementById('currentPwd').value = '';
+        document.getElementById('newPwd').value = '';
+        document.getElementById('confirmPwd').value = '';
     });
 
     // ============================================================
