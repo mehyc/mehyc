@@ -128,7 +128,7 @@
             min-height: 20px;
         }
 
-        /* ===== 主選單（選擇要變更的項目） ===== */
+        /* ===== 主選單 ===== */
         .main-menu { display: none; }
         .main-menu.active { display: block; }
 
@@ -346,7 +346,7 @@
 
 <div class="admin-container">
 
-    <!-- ===== 頂部標題列（登入後才顯示登出按鈕） ===== -->
+    <!-- ===== 頂部標題列 ===== -->
     <div class="top-bar" id="topBar" style="display: none;">
         <div class="title-box">
             <h1>🔧 管理介面</h1>
@@ -366,7 +366,7 @@
         <div class="login-error" id="loginError"></div>
     </div>
 
-    <!-- ===== 主選單（選擇要變更的項目） ===== -->
+    <!-- ===== 主選單 ===== -->
     <div class="main-menu" id="mainMenu">
         <div class="menu-grid">
             <div class="menu-card" data-target="motto">
@@ -436,10 +436,15 @@
                 <input type="text" class="form-input readonly" id="infoBirthday" readonly>
                 <div class="readonly-hint"><i class="fas fa-lock"></i> 此欄位固定，無法修改</div>
             </div>
+
+            <!-- 年齡改為下拉選單 -->
             <div class="form-group">
-                <label>🧒 年齡</label>
-                <input type="text" class="form-input" id="infoAge" placeholder="例如：17歲">
+                <label>🧒 年齡（下拉選單）</label>
+                <select class="form-select" id="infoAge">
+                    <!-- 由 JavaScript 動態生成 1~100 歲 -->
+                </select>
             </div>
+
             <div class="form-group">
                 <label>❤️ 感情狀態（下拉選單）</label>
                 <select class="form-select" id="infoRelationship">
@@ -452,6 +457,7 @@
                     <option value="離婚">離婚</option>
                 </select>
             </div>
+
             <div class="form-group">
                 <label>♋ 星座（不可修改）</label>
                 <input type="text" class="form-input readonly" id="infoZodiac" readonly>
@@ -462,6 +468,7 @@
                 <input type="text" class="form-input readonly" id="infoBlood" readonly>
                 <div class="readonly-hint"><i class="fas fa-lock"></i> 此欄位固定，無法修改</div>
             </div>
+
             <button class="save-btn" id="saveInfoBtn">💾 儲存個人資料</button>
             <div class="status-msg" id="statusInfo"></div>
         </div>
@@ -524,6 +531,28 @@
     const db = firebase.database();
 
     // ============================================================
+    // 動態生成年齡下拉選單（1~100 歲）
+    // ============================================================
+    (function generateAgeOptions() {
+        const ageSelect = document.getElementById('infoAge');
+        if (!ageSelect) return;
+
+        // 加入「不透露」選項
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '不透露';
+        defaultOption.textContent = '不透露';
+        ageSelect.appendChild(defaultOption);
+
+        // 加入 1~100 歲
+        for (let i = 1; i <= 100; i++) {
+            const option = document.createElement('option');
+            option.value = i + '歲';
+            option.textContent = i + '歲';
+            ageSelect.appendChild(option);
+        }
+    })();
+
+    // ============================================================
     // 頁面元素
     // ============================================================
     const topBar = document.getElementById('topBar');
@@ -535,14 +564,12 @@
     const logoutBtn = document.getElementById('logoutBtn');
 
     // ============================================================
-    // 登入邏輯（密碼從 Firebase 讀取）
+    // 登入邏輯
     // ============================================================
-    // 檢查是否已登入
     if (sessionStorage.getItem('adminLoggedIn') === 'true') {
         showMainMenu();
     }
 
-    // 登入按鈕
     loginBtn.addEventListener('click', async () => {
         const pwd = passwordInput.value.trim();
         if (!pwd) {
@@ -565,7 +592,6 @@
                 passwordInput.value = '';
             }
         } catch (err) {
-            // 如果 Firebase 讀取失敗，使用預設密碼
             if (pwd === 'hyc0628') {
                 sessionStorage.setItem('adminLoggedIn', 'true');
                 showMainMenu();
@@ -582,13 +608,11 @@
         if (e.key === 'Enter') loginBtn.click();
     });
 
-    // 登出
     logoutBtn.addEventListener('click', () => {
         sessionStorage.removeItem('adminLoggedIn');
         location.reload();
     });
 
-    // 顯示主選單
     function showMainMenu() {
         loginBox.style.display = 'none';
         topBar.style.display = 'flex';
@@ -608,11 +632,9 @@
         });
     });
 
-    // 返回選單
     function backToMenu() {
         document.querySelectorAll('.edit-page').forEach(p => p.classList.remove('active'));
         mainMenu.classList.add('active');
-        // 清除所有狀態訊息
         document.querySelectorAll('.status-msg').forEach(el => el.textContent = '');
     }
     window.backToMenu = backToMenu;
@@ -652,7 +674,21 @@
             document.getElementById('infoZodiac').value = info.zodiac || '巨蟹座';
             document.getElementById('infoBlood').value = info.blood || 'Aˉ';
             document.getElementById('infoEducation').value = info.education || '';
-            document.getElementById('infoAge').value = info.age || '';
+
+            // 年齡下拉選單（設定目前值）
+            const ageSelect = document.getElementById('infoAge');
+            const ageValue = info.age || '不透露';
+            // 確認選項存在，若無則加入
+            let optionExists = Array.from(ageSelect.options).some(opt => opt.value === ageValue);
+            if (!optionExists) {
+                const newOption = document.createElement('option');
+                newOption.value = ageValue;
+                newOption.textContent = ageValue;
+                ageSelect.appendChild(newOption);
+            }
+            ageSelect.value = ageValue;
+
+            // 感情下拉選單
             document.getElementById('infoRelationship').value = info.relationship || '不透露';
         });
 
@@ -716,7 +752,7 @@
     });
 
     // ============================================================
-    // 變更密碼（存到 Firebase，跨裝置同步）
+    // 變更密碼
     // ============================================================
     document.getElementById('changePwdBtn').addEventListener('click', async () => {
         const currentPwd = document.getElementById('currentPwd').value.trim();
@@ -743,7 +779,6 @@
         showStatus('statusPassword', 'info', '⏳ 驗證中...');
 
         try {
-            // 驗證目前密碼
             const snapshot = await db.ref('admin/password').once('value');
             const correctPwd = snapshot.val() || 'hyc0628';
 
@@ -752,7 +787,6 @@
                 return;
             }
 
-            // 儲存新密碼到 Firebase
             await db.ref('admin/password').set(newPwd);
             showStatus('statusPassword', 'success', '✅ 密碼已成功變更！下次登入請使用新密碼');
 
