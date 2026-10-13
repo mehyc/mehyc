@@ -321,7 +321,6 @@
             margin-top: 4px; font-size: 0.7rem; color: #9f9fcf;
             display: flex; align-items: center; justify-content: center; gap: 6px;
         }
-        /* 🟢 呼吸閃爍綠燈 */
         .green-pulse {
             display: inline-block;
             width: 8px;
@@ -491,7 +490,7 @@
     <div class="info-card">
         <button class="close-btn" id="infoCloseBtn">&times;</button>
         <div class="info-title">👤 個 人 資 料</div>
-        <div class="info-content">
+        <div class="info-content" id="infoContent">
             <span class="label">📍 哪裡人：</span><span class="value">彰化人</span><br>
             <span class="label">🎓 學歷：</span><span class="value">就讀高中職</span><br>
             <span class="label">📅 幾年：</span><span class="value">09年</span><br>
@@ -508,7 +507,7 @@
     <div class="cancer-card">
         <button class="close-btn" id="cancerCloseBtn">&times;</button>
         <div class="cancer-title">♋ 巨 蟹 座</div>
-        <div class="cancer-content">
+        <div class="cancer-content" id="cancerContent">
 巨蟹座簡述
 =情感細膩+共感力強+敏感脆弱+表面溫和+情緒海洋+超級顧家+極度念舊+重視陪伴+習慣壓抑不說+愛一個人很深+放不下也說不出口+安全感至上+小事就會胡思亂想+偷偷心軟+外柔內韌+害怕失去+愛一個人就會付出一切=巨蟹座
 
@@ -559,7 +558,7 @@
     <div class="motto-card">
         <button class="close-btn" id="mottoCloseBtn">&times;</button>
         <div class="motto-title">📜 座 右 銘</div>
-        <div class="motto-content">
+        <div class="motto-content" id="mottoContent">
             珍惜當下! 不留遺憾
             把握當下每一分每一秒
             錯過了僅可當回憶
@@ -585,6 +584,7 @@
             mainWrapper.classList.add('visible');
             if (typeof startRealtimeCounter === 'function') startRealtimeCounter();
             if (typeof bindButtons === 'function') bindButtons();
+            if (typeof loadContentFromFirebase === 'function') loadContentFromFirebase();
             document.body.style.overflow = '';
             speakWelcome();
         }, 800);
@@ -592,10 +592,64 @@
 
     document.body.style.overflow = 'hidden';
 
+    // ========= Firebase 設定 =========
+    const firebaseConfig = {
+        databaseURL: "https://mehyc-7eabb-default-rtdb.asia-southeast1.firebasedatabase.app/"
+    };
+
+    // ============================================================
+    // 📥 從 Firebase 載入內容（座右銘、個人資料、巨蟹座）
+    // ============================================================
+    function loadContentFromFirebase() {
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            const db = firebase.database();
+
+            // 載入座右銘
+            db.ref('content/motto').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    document.getElementById('mottoContent').textContent = data;
+                }
+            });
+
+            // 載入個人資料
+            db.ref('content/profile').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    const infoContent = document.getElementById('infoContent');
+                    infoContent.innerHTML = `
+                        <span class="label">📍 哪裡人：</span><span class="value">${data.location || ''}</span><br>
+                        <span class="label">🎓 學歷：</span><span class="value">${data.education || ''}</span><br>
+                        <span class="label">📅 幾年：</span><span class="value">${data.year || ''}</span><br>
+                        <span class="label">🎂 生日：</span><span class="value">${data.birthday || ''}</span><br>
+                        <span class="label">🧒 年齡：</span><span class="value">${data.age || ''}</span><br>
+                        <span class="label">❤️ 感情：</span><span class="value">${data.relationship || ''}</span><br>
+                        <span class="label">♋ 星座：</span><span class="value">${data.zodiac || ''}</span><br>
+                        <span class="label">🩸 血型：</span><span class="value">${data.blood || ''}</span>
+                    `;
+                }
+            });
+
+            // 載入巨蟹座
+            db.ref('content/cancer').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    document.getElementById('cancerContent').textContent = data;
+                }
+            });
+
+            console.log('✅ 已從 Firebase 載入內容');
+        } catch (err) {
+            console.error('載入內容失敗:', err);
+        }
+    }
+
     // ============================================================
     // 🎵 音樂播放系統（自動偵測存在的 MP3）
     // ============================================================
-
     const audio = document.getElementById('audioPlayer');
     const playPauseBtn = document.getElementById('playPauseBtn');
     const playIcon = document.getElementById('playIcon');
@@ -806,10 +860,6 @@
     scanMusicFiles();
 
     // ========= Firebase 瀏覽次數計數器 =========
-    const firebaseConfig = {
-        databaseURL: "https://mehyc-7eabb-default-rtdb.asia-southeast1.firebasedatabase.app/"
-    };
-
     function startRealtimeCounter() {
         try {
             if (!firebase.apps.length) {
@@ -1040,7 +1090,7 @@
         if (btns[5]) btns[5].addEventListener('click', () => showToast('🎵 追蹤抖音 TikTok · 精彩短影音'));
     }
 
-    console.log('✅ Chan Hyc 秘密基地已載入（🟢 總瀏覽次數呼吸綠燈已啟用）');
+    console.log('✅ Chan Hyc 秘密基地已載入（含 Firebase 內容管理）');
 </script>
 </body>
 </html>
