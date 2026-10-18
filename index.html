@@ -17,6 +17,7 @@
             padding-bottom: 115px;
             overflow-x: hidden;
         }
+        /* ========= 欢迎弹窗 ========= */
         .welcome-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.92); backdrop-filter: blur(12px);
@@ -60,6 +61,7 @@
         }
         .main-wrapper { opacity: 0; transition: opacity 0.8s ease; }
         .main-wrapper.visible { opacity: 1; }
+        /* ========= 跑马灯 ========= */
         .marquee-wrapper {
             position: sticky; top: 0; width: 100%;
             background: rgba(10, 12, 26, 0.85); backdrop-filter: blur(12px);
@@ -486,88 +488,35 @@
     <div id="toastMsg" class="toast-msg">✨ 操作成功</div>
 </div>
 
+<!-- 個人資料彈窗 -->
 <div class="info-overlay" id="infoOverlay">
     <div class="info-card">
         <button class="close-btn" id="infoCloseBtn">&times;</button>
         <div class="info-title">👤 個 人 資 料</div>
         <div class="info-content" id="infoContent">
-            <span class="label">📍 哪裡人：</span><span class="value">彰化人</span><br>
-            <span class="label">🎓 學歷：</span><span class="value">就讀高中職</span><br>
-            <span class="label">📜 證照：</span><span class="value">丙級電腦軟體應用</span><br>
-            <span class="label">📅 幾年：</span><span class="value">09年</span><br>
-            <span class="label">🎂 生日：</span><span class="value">0628</span><br>
-            <span class="label">🧒 年齡：</span><span class="value">17歲</span><br>
-            <span class="label">❤️ 感情：</span><span class="value">不方便透露</span><br>
-            <span class="label">♋ 星座：</span><span class="value">巨蟹座</span><br>
-            <span class="label">🩸 血型：</span><span class="value">Aˉ</span>
+            <!-- 內容由 JavaScript 動態載入並排序 -->
         </div>
     </div>
 </div>
 
+<!-- 巨蟹座彈窗 -->
 <div class="cancer-overlay" id="cancerOverlay">
     <div class="cancer-card">
         <button class="close-btn" id="cancerCloseBtn">&times;</button>
         <div class="cancer-title">♋ 巨 蟹 座</div>
         <div class="cancer-content" id="cancerContent">
-巨蟹座簡述
-=情感細膩+共感力強+敏感脆弱+表面溫和+情緒海洋+超級顧家+極度念舊+重視陪伴+習慣壓抑不說+愛一個人很深+放不下也說不出口+安全感至上+小事就會胡思亂想+偷偷心軟+外柔內韌+害怕失去+愛一個人就會付出一切=巨蟹座
-
-
-巨蟹座嘴上說沒事其實心裡早就……
-有些話，巨蟹不是不想說
-只是習慣藏在心裡
-把你的每一句話
-都放在心上
-巨蟹不是記性特別好
-而是對在乎的人特別敏感
-你可能只是隨口一句話
-他卻會默默記很久
-不是愛計較
-只是因為你很重要，所以才會在意
-偷偷難過
-卻笑著說沒事
-巨蟹很習慣照顧別人的感受
-卻常常忘了照顧自己的情緒
-明明心裡有委屈
-嘴上卻還是說：「沒事啦。」
-不是沒有情緒
-只是習慣自己消化
-一次次包容
-也一次次失望
-巨蟹不是沒有底線
-只是對在乎的人總是比較心軟
-一次次給機會
-一次次告訴自己再相信一次
-直到失望累積久久
-才會選擇慢慢退開
-慢慢收回自己的真心
-巨蟹認定一個人時
-會給很多耐心和偏愛
-但當他開始不再分享生活
-不再期待你的回應
-不是不愛了
-而是學會把心收回來
-巨蟹不是愛多想，只是把每一份在乎
-都放得輕鬆
-有些事情不是忘不了
-而是曾經真的很珍惜
+            <!-- 內容由 JavaScript 載入 -->
         </div>
     </div>
 </div>
 
+<!-- 座右銘彈窗 -->
 <div class="motto-overlay" id="mottoOverlay">
     <div class="motto-card">
         <button class="close-btn" id="mottoCloseBtn">&times;</button>
         <div class="motto-title">📜 座 右 銘</div>
         <div class="motto-content" id="mottoContent">
-            珍惜當下! 不留遺憾
-            把握當下每一分每一秒
-            錯過了僅可當回憶
-            人生這道題
-            無論怎麼選都會有遺憾
-            聚散離合本就是人生常態
-            不要被女人左右
-            要上下左右都是女人
+            <!-- 內容由 JavaScript 載入 -->
         </div>
     </div>
 </div>
@@ -599,7 +548,7 @@
     };
 
     // ============================================================
-    // 📥 從 Firebase 載入內容（座右銘、個人資料、巨蟹座）
+    // 📥 從 Firebase 載入內容（座右銘、個人資料(含排序)、巨蟹座）
     // ============================================================
     function loadContentFromFirebase() {
         try {
@@ -611,36 +560,50 @@
             // 載入座右銘
             db.ref('content/motto').on('value', (snapshot) => {
                 const data = snapshot.val();
-                if (data) {
-                    document.getElementById('mottoContent').textContent = data;
-                }
+                if (data) document.getElementById('mottoContent').textContent = data;
             });
 
-            // 載入個人資料
+            // 載入個人資料 (支援自訂排序與駕照狀態)
             db.ref('content/profile').on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
-                    const infoContent = document.getElementById('infoContent');
-                    infoContent.innerHTML = `
-                        <span class="label">📍 哪裡人：</span><span class="value">${data.location || ''}</span><br>
-                        <span class="label">🎓 學歷：</span><span class="value">${data.education || ''}</span><br>
-                        <span class="label">📜 證照：</span><span class="value">${data.certificate || '丙級電腦軟體應用'}</span><br>
-                        <span class="label">📅 幾年：</span><span class="value">${data.year || ''}</span><br>
-                        <span class="label">🎂 生日：</span><span class="value">${data.birthday || ''}</span><br>
-                        <span class="label">🧒 年齡：</span><span class="value">${data.age || ''}</span><br>
-                        <span class="label">❤️ 感情：</span><span class="value">${data.relationship || ''}</span><br>
-                        <span class="label">♋ 星座：</span><span class="value">${data.zodiac || ''}</span><br>
-                        <span class="label">🩸 血型：</span><span class="value">${data.blood || ''}</span>
-                    `;
+                    // 預設順序 (如果 Firebase 沒有儲存自訂順序)
+                    const defaultOrder = ['location', 'education', 'certificate', 'license', 'year', 'birthday', 'age', 'relationship', 'zodiac', 'blood'];
+                    const order = data.order || defaultOrder;
+
+                    // 欄位資料對應表
+                    const fieldData = {
+                        location: { label: '📍 哪裡人：', value: data.location || '' },
+                        education: { label: '🎓 學歷：', value: data.education || '' },
+                        certificate: { label: '📜 證照：', value: data.certificate || '丙級電腦軟體應用' },
+                        license: { label: '🚗 駕照：', value: data.license ? '有' : '沒有' }, // 動態判斷開關
+                        year: { label: '📅 幾年：', value: data.year || '' },
+                        birthday: { label: '🎂 生日：', value: data.birthday || '' },
+                        age: { label: '🧒 年齡：', value: data.age || '' },
+                        relationship: { label: '❤️ 感情：', value: data.relationship || '' },
+                        zodiac: { label: '♋ 星座：', value: data.zodiac || '' },
+                        blood: { label: '🩸 血型：', value: data.blood || '' }
+                    };
+
+                    // 根據排序組合 HTML
+                    let html = '';
+                    order.forEach(key => {
+                        if (fieldData[key]) {
+                            html += `<span class="label">${fieldData[key].label}</span><span class="value">${fieldData[key].value}</span><br>`;
+                        }
+                    });
+
+                    // 移除最後多餘的 <br>
+                    html = html.replace(/<br>$/, '');
+
+                    document.getElementById('infoContent').innerHTML = html;
                 }
             });
 
             // 載入巨蟹座
             db.ref('content/cancer').on('value', (snapshot) => {
                 const data = snapshot.val();
-                if (data) {
-                    document.getElementById('cancerContent').textContent = data;
-                }
+                if (data) document.getElementById('cancerContent').textContent = data;
             });
 
             console.log('✅ 已從 Firebase 載入內容');
@@ -1092,7 +1055,7 @@
         if (btns[5]) btns[5].addEventListener('click', () => showToast('🎵 追蹤抖音 TikTok · 精彩短影音'));
     }
 
-    console.log('✅ Chan Hyc 秘密基地已載入（個人資料已新增證照欄位）');
+    console.log('✅ Chan Hyc 秘密基地已載入（支援自訂排序與駕照狀態）');
 </script>
 </body>
 </html>
