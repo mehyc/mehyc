@@ -159,6 +159,7 @@
             display: flex; align-items: center; justify-content: space-between;
             background: rgba(0, 0, 0, 0.3); padding: 0.8rem 1rem;
             border-radius: 15px; border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 10px;
         }
         .switch-label { font-size: 0.9rem; color: #e0e2f5; }
         .switch-status {
@@ -373,15 +374,24 @@
                     </div>
                 </div>
 
+                <!-- 駕照 (機車 & 汽車) -->
                 <div class="drag-item" data-key="license">
                     <div class="drag-handle"><i class="fas fa-grip-vertical"></i></div>
                     <div class="drag-content">
                         <label>🚗 駕照</label>
-                        <div class="switch-wrapper">
-                            <span class="switch-label">是否擁有駕照</span>
-                            <span class="switch-status" id="licenseStatus">沒有駕照</span>
+                        <div class="switch-wrapper" style="margin-bottom: 8px;">
+                            <span class="switch-label">🏍️ 機車駕照</span>
+                            <span class="switch-status" id="licenseMotoStatus">沒有</span>
                             <label class="switch">
-                                <input type="checkbox" id="infoLicense">
+                                <input type="checkbox" id="infoLicenseMoto">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="switch-wrapper">
+                            <span class="switch-label">🚗 汽車駕照</span>
+                            <span class="switch-status" id="licenseCarStatus">沒有</span>
+                            <label class="switch">
+                                <input type="checkbox" id="infoLicenseCar">
                                 <span class="slider"></span>
                             </label>
                         </div>
@@ -524,10 +534,9 @@
 
     new Sortable(sortableList, {
         animation: 150,
-        handle: '.drag-handle', // 只能透過左側把手拖曳
+        handle: '.drag-handle',
         ghostClass: 'dragging',
         onEnd: function (evt) {
-            // 拖曳結束後，重新獲取當前順序
             const items = sortableList.querySelectorAll('.drag-item');
             currentOrder = Array.from(items).map(item => item.getAttribute('data-key'));
         }
@@ -544,16 +553,28 @@
     const loginError = document.getElementById('loginError');
     const logoutBtn = document.getElementById('logoutBtn');
 
-    const licenseToggle = document.getElementById('infoLicense');
-    const licenseStatus = document.getElementById('licenseStatus');
+    const licenseMotoToggle = document.getElementById('infoLicenseMoto');
+    const licenseMotoStatus = document.getElementById('licenseMotoStatus');
+    const licenseCarToggle = document.getElementById('infoLicenseCar');
+    const licenseCarStatus = document.getElementById('licenseCarStatus');
 
-    licenseToggle.addEventListener('change', () => {
-        if (licenseToggle.checked) {
-            licenseStatus.textContent = '有駕照';
-            licenseStatus.classList.add('active');
+    licenseMotoToggle.addEventListener('change', () => {
+        if (licenseMotoToggle.checked) {
+            licenseMotoStatus.textContent = '有';
+            licenseMotoStatus.classList.add('active');
         } else {
-            licenseStatus.textContent = '沒有駕照';
-            licenseStatus.classList.remove('active');
+            licenseMotoStatus.textContent = '沒有';
+            licenseMotoStatus.classList.remove('active');
+        }
+    });
+
+    licenseCarToggle.addEventListener('change', () => {
+        if (licenseCarToggle.checked) {
+            licenseCarStatus.textContent = '有';
+            licenseCarStatus.classList.add('active');
+        } else {
+            licenseCarStatus.textContent = '沒有';
+            licenseCarStatus.classList.remove('active');
         }
     });
 
@@ -639,11 +660,11 @@
                 relationship: data.relationship || '不透露',
                 zodiac: data.zodiac || '巨蟹座',
                 blood: data.blood || 'Aˉ',
-                license: data.license === true,
+                licenseMoto: data.licenseMoto === true,
+                licenseCar: data.licenseCar === true,
                 order: data.order || ['location', 'education', 'certificate', 'license', 'year', 'birthday', 'age', 'relationship', 'zodiac', 'blood']
             };
 
-            // 填入資料
             document.getElementById('infoLocation').value = info.location;
             document.getElementById('infoEducation').value = info.education;
             document.getElementById('infoCertificate').value = info.certificate;
@@ -652,13 +673,24 @@
             document.getElementById('infoZodiac').value = info.zodiac;
             document.getElementById('infoBlood').value = info.blood;
             
-            licenseToggle.checked = info.license;
-            if (info.license) {
-                licenseStatus.textContent = '有駕照';
-                licenseStatus.classList.add('active');
+            // 機車駕照
+            licenseMotoToggle.checked = info.licenseMoto;
+            if (info.licenseMoto) {
+                licenseMotoStatus.textContent = '有';
+                licenseMotoStatus.classList.add('active');
             } else {
-                licenseStatus.textContent = '沒有駕照';
-                licenseStatus.classList.remove('active');
+                licenseMotoStatus.textContent = '沒有';
+                licenseMotoStatus.classList.remove('active');
+            }
+
+            // 汽車駕照
+            licenseCarToggle.checked = info.licenseCar;
+            if (info.licenseCar) {
+                licenseCarStatus.textContent = '有';
+                licenseCarStatus.classList.add('active');
+            } else {
+                licenseCarStatus.textContent = '沒有';
+                licenseCarStatus.classList.remove('active');
             }
 
             const ageSelect = document.getElementById('infoAge');
@@ -676,7 +708,6 @@
             currentOrder = info.order;
             const list = document.getElementById('sortableList');
             const items = Array.from(list.querySelectorAll('.drag-item'));
-            // 清空並依序重新插入
             list.innerHTML = '';
             currentOrder.forEach(key => {
                 const item = items.find(el => el.getAttribute('data-key') === key);
@@ -714,8 +745,9 @@
                 education: document.getElementById('infoEducation').value,
                 age: document.getElementById('infoAge').value,
                 relationship: document.getElementById('infoRelationship').value,
-                license: licenseToggle.checked,
-                order: currentOrder // 儲存拖曳順序
+                licenseMoto: licenseMotoToggle.checked,
+                licenseCar: licenseCarToggle.checked,
+                order: currentOrder
             };
             showStatus('statusInfo', 'info', '⏳ 儲存中...');
             return db.ref('content/profile').set(data);
