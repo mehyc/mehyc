@@ -563,7 +563,7 @@
                 if (data) document.getElementById('mottoContent').textContent = data;
             });
 
-            // 載入個人資料 (支援自訂排序與駕照狀態)
+            // 載入個人資料 (支援自訂排序與機車/汽車駕照狀態)
             db.ref('content/profile').on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
@@ -571,12 +571,23 @@
                     const defaultOrder = ['location', 'education', 'certificate', 'license', 'year', 'birthday', 'age', 'relationship', 'zodiac', 'blood'];
                     const order = data.order || defaultOrder;
 
+                    // 處理駕照顯示邏輯 (動態生成字串)
+                    let licenseStr = '';
+                    if (data.licenseMoto && data.licenseCar) {
+                        licenseStr = '機車、汽車';
+                    } else if (data.licenseMoto) {
+                        licenseStr = '機車';
+                    } else if (data.licenseCar) {
+                        licenseStr = '汽車';
+                    }
+
                     // 欄位資料對應表
                     const fieldData = {
                         location: { label: '📍 哪裡人：', value: data.location || '' },
                         education: { label: '🎓 學歷：', value: data.education || '' },
                         certificate: { label: '📜 證照：', value: data.certificate || '丙級電腦軟體應用' },
-                        license: { label: '🚗 駕照：', value: data.license ? '有' : '沒有' }, // 動態判斷開關
+                        // 如果沒有駕照 (licenseStr 為空)，則該欄位不顯示
+                        license: licenseStr ? { label: '🚗 駕照：', value: licenseStr } : null,
                         year: { label: '📅 幾年：', value: data.year || '' },
                         birthday: { label: '🎂 生日：', value: data.birthday || '' },
                         age: { label: '🧒 年齡：', value: data.age || '' },
@@ -588,6 +599,7 @@
                     // 根據排序組合 HTML
                     let html = '';
                     order.forEach(key => {
+                        // 如果 fieldData[key] 存在才加入
                         if (fieldData[key]) {
                             html += `<span class="label">${fieldData[key].label}</span><span class="value">${fieldData[key].value}</span><br>`;
                         }
@@ -1055,7 +1067,7 @@
         if (btns[5]) btns[5].addEventListener('click', () => showToast('🎵 追蹤抖音 TikTok · 精彩短影音'));
     }
 
-    console.log('✅ Chan Hyc 秘密基地已載入（支援自訂排序與駕照狀態）');
+    console.log('✅ Chan Hyc 秘密基地已載入（支援自訂排序與機車/汽車駕照狀態）');
 </script>
 </body>
 </html>
